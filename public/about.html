@@ -7,26 +7,36 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <!-- Sticky Header (unified) -->
-  <div class="site-header">
-    <div class="wrap container">
-      <div class="brand">Franklin Innovation Group</div>
-      <nav class="site">
-        <a href="/">Home</a>
-        <a href="/about.html">About</a>
-        <a href="/services.html">Services</a>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/contact.html">Contact</a>
-      </nav>
-      <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
-    </div>
+<!-- Sticky Header (unified) -->
+<div class="site-header">
+  <div class="wrap container">
+    <a href="/" class="brand">
+      <img src="/img/FIG-Logo.png" alt="Franklin Innovation Group logo" class="logo" />
+      <span>Franklin Innovation Group</span>
+    </a>
+    <nav class="site">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/services.html">Services</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+    <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
   </div>
+</div>
 
   <!-- Hero -->
-  <header class="hero container">
+<header class="hero hero--video container">
+  <video autoplay muted loop playsinline id="heroVideo" aria-hidden="true">
+    <source src="/video/fighero.mp4" type="video/mp4">
+    <!-- Fallback image if video doesn’t load -->
+    <img src="/img/hero-fallback.png" alt="Background visual" />
+  </video>
+   <div class="hero-overlay">
     <h1>About Us</h1>
     <p class="tagline">Evolving IT. Empowering People.</p>
+   </div>
   </header>
 
   <main class="container">
@@ -53,8 +63,8 @@
             <!-- Replace with your photo: <img src="/img/matt.jpg" alt="Matt Franklin"> -->
             <span>MF</span>
           </div>
-          <p><strong>Matt Franklin</strong> is an engineering and product leader with 25+ years across software, infrastructure, and AI—often in highly regulated industries. He translates strategy into practical roadmaps and builds teams and practices to deliver them.</p>
-          <p class="muted">Focus: IT strategy & platforms, vendor selection, QA/BA practices, product management, and AI-assisted delivery.</p>
+          <p><strong>Matt Franklin</strong> is an engineering and product leader with 25+ years building software soloutions. Often in highly regulated industries. He translates strategy into practical roadmaps and builds soloutions.</p>
+          <p class="muted">Focus: IT strategy & platforms, vendor selection, IT best practices, product management, and AI-assisted delivery.</p>
           <p><a class="cta" href="/contact.html">Book a 30-min Intro Call</a></p>
         </div>
 

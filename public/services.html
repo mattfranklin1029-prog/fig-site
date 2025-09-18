@@ -9,29 +9,77 @@
 
 
 <body>
-  <!-- Sticky Header (unified) -->
-  <div class="site-header">
-    <div class="wrap container">
-      <div class="brand">Franklin Innovation Group</div>
-      <nav class="site">
-        <a href="/">Home</a>
-        <a href="/about.html">About</a>
-        <a href="/services.html">Services</a>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/contact.html">Contact</a>
-      </nav>
-      <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
-    </div>
+<!-- Sticky Header (unified) -->
+<div class="site-header">
+  <div class="wrap container">
+    <a href="/" class="brand">
+      <img src="/img/FIG-Logo.png" alt="Franklin Innovation Group logo" class="logo" />
+      <span>Franklin Innovation Group</span>
+    </a>
+    <nav class="site">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/services.html">Services</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+    <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
   </div>
+</div>
 
   <!-- Hero -->
-  <header class="hero container">
+
+  <header class="hero hero--video container">
+  <video autoplay muted loop playsinline id="heroVideo" aria-hidden="true">
+    <source src="/video/fighero.mp4" type="video/mp4">
+    <!-- Fallback image if video doesn’t load -->
+    <img src="/img/hero-fallback.png" alt="Background visual" />
+  </video>
+
+  <div class="hero-overlay">
     <h1>Our Services</h1>
     <p class="tagline">Smarter decisions. Lower risk. Websites that ship.</p>
+    </div>
   </header>
 
   <main class="container">
+    <!-- Websites & Digital Delivery -->
+    <section>
+      <h2>Websites & Digital Delivery</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+            No-Code Launch
+          </h3>
+          <p>Wix / Squarespace / WordPress. Branded 5–7 pages, basic SEO, analytics, and handoff training.</p>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 10H7M21 6H3M21 14H3M21 18H7"/></svg>
+            Low-Code Portals
+          </h3>
+          <p>Retool / SharePoint / PowerApps. Auth, workflows, data views, and dashboards—fast.</p>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
+            Custom Builds
+          </h3>
+          <p>Next.js / Node / .NET. API integration, design systems, complex UX, performance & security.</p>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+            Enhancements
+          </h3>
+          <p>Accessibility (WCAG), advanced SEO, performance hardening, structured analytics & tagging.</p>
+        </div>
+      </div>
+      <p class="muted">Deliverables for website work typically include: sitemap, wireframes, content checklist, build, QA, launch plan, and training.</p>
+    </section>
+
     <!-- Advisory & Roadmaps -->
     <section>
       <h2>Advisory & Roadmaps</h2>
@@ -83,46 +131,12 @@
             <svg class="icon" viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M12 3v18"/></svg>
             SDLC Uplift
           </h3>
-          <p>QA/BA practices, CI/CD, product management, change enablement, and transparent delivery.</p>
+          <p>Dev/QA/BA practices, CI/CD, product management, change enablement, and transparent delivery.</p>
         </div>
       </div>
     </section>
 
-    <!-- Websites & Digital Delivery -->
-    <section>
-      <h2>Websites & Digital Delivery</h2>
-      <div class="grid-3">
-        <div class="card">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
-            No-Code Launch
-          </h3>
-          <p>Wix / Squarespace / Webflow. Branded 5–7 pages, basic SEO, analytics, and handoff training.</p>
-        </div>
-        <div class="card">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24"><path d="M21 10H7M21 6H3M21 14H3M21 18H7"/></svg>
-            Low-Code Portals
-          </h3>
-          <p>Retool / SharePoint / Liferay. Auth, workflows, data views, and dashboards—fast.</p>
-        </div>
-        <div class="card">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
-            Custom Builds
-          </h3>
-          <p>Next.js / Node / .NET. API integration, design systems, complex UX, performance & security.</p>
-        </div>
-        <div class="card">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
-            Enhancements
-          </h3>
-          <p>Accessibility (WCAG), advanced SEO, performance hardening, structured analytics & tagging.</p>
-        </div>
-      </div>
-      <p class="muted">Deliverables for website work typically include: sitemap, wireframes, content checklist, build, QA, launch plan, and training.</p>
-    </section>
+
 
     <!-- Packages -->
     <section>
