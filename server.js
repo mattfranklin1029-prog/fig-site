@@ -27,14 +27,10 @@ app.use(helmet({
   contentSecurityPolicy: {
     useDefaults: true,
     directives: {
-      // allow your JS
-      "script-src": ["'self'", "'unsafe-inline'"],     // keep if you have inline scripts
-      "script-src-attr": ["'unsafe-inline'"],          // allow onclick= etc. if you use them
-      // allow inline <style> blocks or style="" used by theme toggler
-      "style-src": ["'self'", "'unsafe-inline'"],
-      // (optional) if the toggler injects <style> tags specifically
+      "default-src": ["'self'"],
+      "script-src": ["'self'"],              // no inline JS needed now
+      "style-src": ["'self'", "'unsafe-inline'"],   // allow inline styles if your CSS framework injects small styles
       "style-src-elem": ["'self'", "'unsafe-inline'"],
-      // assets
       "img-src": ["'self'", "data:", "https:"],
       "font-src": ["'self'", "data:"],
       "connect-src": ["'self'"],
@@ -43,6 +39,7 @@ app.use(helmet({
   },
   referrerPolicy: { policy: 'no-referrer' }
 }));
+
 
 
 // --- Enforce HTTPS + optional canonical host ---
