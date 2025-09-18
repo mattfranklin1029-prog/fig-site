@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact | Franklin Innovation Group</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- Sticky Header (unified) -->
+  <div class="site-header">
+    <div class="wrap container">
+      <div class="brand">Franklin Innovation Group</div>
+      <nav class="site">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero container">
+    <h1>Contact</h1>
+    <p class="tagline">Let’s move from plan to progress.</p>
+  </header>
+
+  <main class="container">
+    <section class="contact-wrap">
+      <h2>Book a Conversation</h2>
+      <p class="muted">Prefer email or LinkedIn? Use the links below. Otherwise, send a quick note and I’ll reply within 1 business day.</p>
+
+      <div class="contact-grid">
+        <!-- Direct -->
+        <div class="panel">
+          <h3><span class="badge">✉️</span> Direct</h3>
+          <ul class="list">
+            <li>
+              <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+              <a href="mailto:youremail@example.com">youremail@example.com</a>
+            </li>
+            <li>
+              <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h4v16H4z"/><circle cx="6" cy="6" r="2"/><path d="M12 10h8v10h-8z"/></svg>
+              <a target="_blank" href="https://linkedin.com/in/matt-franklin-44033298" rel="noopener">LinkedIn</a>
+            </li>
+            <li>
+              <svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92V21a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 11 19a19.5 19.5 0 0 1-8-8A19.86 19.86 0 0 1 1 4.18 2 2 0 0 1 3 2h4.09A2 2 0 0 1 9 3.72l.7 1.63a2 2 0 0 1-.45 2.18L8 9a16 16 0 0 0 7 7l1.47-1.25a2 2 0 0 1 2.18-.45l1.63.7A2 2 0 0 1 22 16.92z"/></svg>
+              (555) 555-5555
+            </li>
+          </ul>
+        </div>
+
+        <!-- Form -->
+        <div class="panel">
+          <h3><span class="badge">💬</span> Send a Message</h3>
+
+          <!-- Success / error notice -->
+          <div id="formStatus" class="muted" aria-live="polite" style="min-height:1.2rem;"></div>
+
+          <!-- Replace action with your provider (Formspree example below) -->
+          <!-- Create a Formspree form and replace YOUR_FORM_ID -->
+          <form class="form-grid" method="POST" action="https://formspree.io/f/YOUR_FORM_ID">
+            <!-- Honeypot (spam trap) -->
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;opacity:0" aria-hidden="true">
+
+            <div class="form-grid two">
+              <div>
+                <label for="name">Name</label>
+                <input id="name" name="name" class="input" type="text" required autocomplete="name" placeholder="Your name">
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" class="input" type="email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
+              </div>
+            </div>
+
+            <div>
+              <label for="msg">Message</label>
+              <textarea id="msg" name="message" class="input" required placeholder="Write your message..."></textarea>
+            </div>
+
+            <div class="btn-row">
+              <button class="cta" type="submit">Send</button>
+              <a href="mailto:youremail@example.com" class="button-ghost">Email Instead</a>
+            </div>
+
+            <!-- Optional: metadata -->
+            <input type="hidden" name="_subject" value="Website Contact — Franklin Innovation Group">
+            <input type="hidden" name="_redirect" value="https://yourdomain.com/thank-you.html">
+          </form>
+
+          <p class="help">Tip: Using <a href="https://formspree.io/" target="_blank" rel="noopener">Formspree</a> or Netlify Forms keeps your email private and avoids mailto issues on some devices. See our <a href="privacy.html">Privacy</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Unified Footer -->
+  <footer class="site container">
+    <p>© <span id="y"></span> Franklin Innovation Group · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+    <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+  </footer>
+
+  <!-- Tiny Theme Switcher -->
+<script>
+  (function(){
+    const key = 'fig-theme';
+    const body = document.body;
+    const btn  = document.getElementById('themeToggle');
+
+    // Add "theme-light" at the end of the cycle
+    const classes = ['','theme-emerald','theme-plum','theme-light'];
+
+    function currentTheme(){
+      if(body.classList.contains('theme-emerald')) return 'theme-emerald';
+      if(body.classList.contains('theme-plum'))    return 'theme-plum';
+      if(body.classList.contains('theme-light'))   return 'theme-light';
+      return '';
+    }
+    function apply(t){
+      body.classList.remove('theme-emerald','theme-plum','theme-light');
+      if(t) body.classList.add(t);
+      // cute indicator
+      btn && (btn.textContent = t==='theme-emerald' ? '💚'
+                               : t==='theme-plum'    ? '🍇'
+                               : t==='theme-light'   ? '☀️'
+                               : '🌗'); // default navy
+    }
+
+    // Load saved choice (default = navy)
+    apply(localStorage.getItem(key) || '');
+
+    btn?.addEventListener('click', () => {
+      const cur  = currentTheme();
+      const next = classes[(classes.indexOf(cur)+1) % classes.length];
+      apply(next);
+      localStorage.setItem(key, next);
+    });
+  })();
+</script>
+
+  <!-- Optional tiny JS: show a friendly message when form redirects are blocked (local dev) -->
+  <script>
+    const form = document.querySelector('form[action^="https://formspree.io"]');
+    const status = document.getElementById('formStatus');
+    if(form && status){
+      form.addEventListener('submit', () => {
+        status.textContent = 'Sending…';
+        setTimeout(()=>{ if(status.textContent==='Sending…') status.textContent='If nothing happens, your browser blocked the redirect. You can email me directly instead.'; }, 6000);
+      });
+    }
+  </script>
+</body>
+</html>

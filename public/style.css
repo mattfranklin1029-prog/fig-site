@@ -1,0 +1,303 @@
+/* ===================================================================
+   Franklin Innovation Group — Site Styles (v3.1, lighter dark themes + higher contrast)
+   =================================================================== */
+
+/* ---------- Core Tokens (Default / Navy) ---------- */
+:root{
+  /* Surfaces (lightened slightly vs classic dark, but higher contrast) */
+  --bg: #12172b;          /* was #0f1426 */
+  --bg-2: #0e1426;        /* was #0d1330 */
+  --surface: #171d32;     /* was #141a2d */
+  --surface-2:#131a2b;    /* was #11182b */
+  --edge: rgba(255,255,255,.12); /* was .08 for clearer borders */
+
+  /* Text */
+  --text: #f2f6ff;        /* brighter for readability */
+  --muted:#c4cde0;        /* slightly brighter */
+
+  /* Brand */
+  --brand: #6ea8ff;
+  --brand-2:#7be3ff;
+
+  /* Misc */
+  --ok:#27d17a;
+  --warn:#ffb455;
+  --err:#ff7b7b;
+  --radius: 18px;
+  --shadow: 0 10px 28px rgba(0,0,0,.28);
+  --shadow-lg: 0 14px 34px rgba(0,0,0,.36);
+  --maxw: 1100px;
+}
+
+/* ---------- Theme Variants (toggle by adding class to <body>) ---------- */
+body.theme-emerald{
+  --brand:#41e2b8;
+  --brand-2:#92ffd9;
+  --bg:#122222;         /* slightly darker than before for contrast */
+  --bg-2:#0f1c1c;
+  --surface:#172828;
+  --surface-2:#142323;
+  --text:#f2f8f6;
+  --muted:#c7e2da;
+}
+body.theme-plum{
+  --brand:#c28bff;
+  --brand-2:#ffa6ea;
+  --bg:#1b1524;         /* slightly darker for contrast */
+  --bg-2:#161120;
+  --surface:#221a2e;
+  --surface-2:#1e1728;
+  --text:#f7f2fb;
+  --muted:#dbcee9;
+}
+
+/* ---------- Light Theme (opt-in via body.theme-light) ---------- */
+body.theme-light{
+  /* Surfaces */
+  --bg:        #f6f8ff;
+  --bg-2:      #eef2fb;
+  --surface:   #ffffff;
+  --surface-2: #f7f9ff;
+  --edge:      rgba(6,20,69,.10);
+
+  /* Text */
+  --text:  #0e1222;
+  --muted: #56607a;
+
+  /* Keep your brand accents */
+  --brand:  #3b82f6;   /* you can keep #6ea8ff if you prefer */
+  --brand-2:#06b6d4;
+
+  /* Softer shadows for light UI */
+  --shadow:    0 10px 24px rgba(14,18,34,.08);
+  --shadow-lg: 0 16px 36px rgba(14,18,34,.12);
+}
+
+/* Light-specific minor tweaks */
+body.theme-light header.hero{
+  /* remove dark overlay in hero for light */
+  background: linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,0));
+}
+body.theme-light .button-ghost{
+  background: #ffffff;
+  border-color: rgba(6,20,69,.12);
+}
+body.theme-light .card, 
+body.theme-light .panel{
+  background: #ffffff;
+  border-color: rgba(6,20,69,.12);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Reset / Base ---------- */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-behavior:smooth;text-rendering:optimizeLegibility}
+body{
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color:var(--text);
+  line-height:1.65;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(110,168,255,.14) 0%, transparent 60%),
+    radial-gradient(900px 480px at 110% 0%, rgba(123,227,255,.10) 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+}
+
+/* Containers */
+.container{ width:min(100%, calc(var(--maxw) + 4rem)); margin-inline:auto; padding-inline: 2rem; }
+main{ padding-block: 1.5rem 2.2rem; }
+
+/* ---------- Header (sticky, glass) ---------- */
+.site-header{
+  position:sticky; top:0; z-index:50;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(10,12,22,.65), rgba(10,12,22,.25));
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+.site-header .wrap{ display:flex; align-items:center; gap:1rem; padding:.7rem 2rem; }
+.brand{ font-weight:800; letter-spacing:.2px; font-size:1.02rem;
+  background: linear-gradient(90deg, #1e4ad6, var(--brand), var(--brand-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+nav.site{ margin-left:auto; display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; }
+nav.site a{
+  color:var(--text); text-decoration:none; font-weight:600; font-size:.95rem;
+  padding:.55rem .9rem; border-radius:999px;
+  border:1px solid var(--edge);
+  background: rgba(255,255,255,.04);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+nav.site a:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.2); box-shadow: 0 8px 22px rgba(0,0,0,.25); }
+
+/* Theme toggle button (emoji icon) */
+.theme-toggle{ margin-left:.4rem; padding:.55rem .7rem; border-radius:12px;
+  border:1px solid var(--edge); background:rgba(255,255,255,.06); color:var(--text); cursor:pointer;
+}
+.theme-toggle:focus-visible{ outline:3px solid rgba(123,227,255,.5); outline-offset:2px }
+
+/* ---------- Hero ---------- */
+header.hero{ text-align:center; padding: 2.6rem 2rem 1.1rem; position:relative;
+  background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.07));
+}
+header.hero::after{
+  content:""; position:absolute; inset:auto 0 0 0; height:2px;
+  background: linear-gradient(90deg, transparent, var(--brand), var(--brand-2), transparent);
+  opacity:.35;
+}
+h1{
+  margin:.1rem 0 .35rem; font-weight:900; letter-spacing:.2px;
+  font-size: clamp(2rem, 1.2rem + 3.2vw, 3.1rem);
+  background: linear-gradient(90deg, #1a4ad6, #3b82f6, #06b6d4);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.tagline{ color:var(--muted); margin:.1rem 0 .9rem; }
+.hero .lead{ color:var(--muted); font-size:1.06rem; max-width: 70ch; margin: .6rem auto 0; }
+.cta-row{ display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; margin-top: .75rem; }
+
+/* ---------- Sections / Cards ---------- */
+section{
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+  border:1px solid var(--edge); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(1rem, .7rem + 1.2vw, 1.6rem);
+  margin: .9rem 0;
+}
+h2{ margin:0 0 .6rem; font-size: clamp(1.2rem, .9rem + 1.2vw, 1.55rem); font-weight:800 }
+h3{ margin:.15rem 0 .4rem; font-size:1.06rem; font-weight:800; display:flex; align-items:center; gap:.6rem; }
+p{ margin:.35rem 0 1rem; }
+.muted{ color: var(--muted); }
+
+/* Feature cards */
+.card{
+  border:1px solid var(--edge); border-radius: var(--radius);
+  padding: .95rem 1rem; background: rgba(255,255,255,.055); /* was .03 */
+  box-shadow: var(--shadow);
+}
+
+/* Grids (tablet-first) */
+.grid-2{ display:grid; gap:.9rem; }
+.grid-3{ display:grid; gap:.9rem; }
+@media (min-width: 700px){ .grid-2{ grid-template-columns: 1fr 1fr; } }
+@media (min-width: 760px){ .grid-3{ grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- Icons ---------- */
+.icon{ width:22px; height:22px; flex:0 0 22px; color: currentColor; }
+
+/* ---------- Buttons & Links ---------- */
+a{ color: var(--brand-2); }
+a:hover{ color:#fff; }
+.cta{
+  display:inline-block; padding:.9rem 1.15rem; border-radius:14px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  color:#031423; /* darker text on bright gradient */
+  font-weight:800; text-decoration:none;
+  box-shadow: var(--shadow-lg); transition: transform .18s ease, box-shadow .18s ease;
+  text-shadow: 0 1px 0 rgba(255,255,255,.25);
+}
+.cta:hover{ transform: translateY(-2px) scale(1.015); box-shadow: 0 14px 34px rgba(0,0,0,.36); }
+.button-ghost{
+  display:inline-block; padding:.7rem 1rem; border-radius:12px;
+  border:1px solid var(--edge); background: rgba(255,255,255,.05); color:var(--text);
+}
+.button-ghost:hover{ border-color: rgba(255,255,255,.22); }
+
+/* ---------- Lists ---------- */
+.checks{ list-style:none; padding:0; margin:0; }
+.checks li{ display:flex; gap:.55rem; align-items:flex-start; margin:.45rem 0; }
+.checks li::before{ content:"✔"; color: var(--ok); font-weight:900; translate: 0 .06rem; }
+
+.steps{ counter-reset:s; list-style:none; padding:0; }
+.steps li{ position:relative; padding-left:2.2rem; margin:.55rem 0; }
+.steps li::before{
+  counter-increment:s; content: counter(s);
+  position:absolute; left:0; top:.05rem; width:1.6rem; height:1.6rem;
+  display:grid; place-items:center; border-radius:999px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  color:#00142a; font-weight:900; box-shadow: var(--shadow);
+}
+
+/* ---------- Bio / Profile ---------- */
+.bio-grid{ display:grid; gap:1rem; }
+@media (min-width: 920px){ .bio-grid{ grid-template-columns: 2fr 1fr; } }
+.bio-card{ background: rgba(255,255,255,.05); border:1px solid var(--edge); border-radius:var(--radius); padding:1rem; }
+.profile-img, .avatar{
+  width: 96px; height: 96px; border-radius:999px; overflow:hidden; display:grid; place-items:center;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#00142a; font-weight:900;
+  margin-bottom:.8rem; box-shadow: var(--shadow);
+}
+.profile-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* ---------- Contact page polish ---------- */
+.contact-wrap{
+  border-radius:22px; padding:1.25rem;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(123,227,255,.10), rgba(255,255,255,.02) 70%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border:1px solid var(--edge); box-shadow: var(--shadow);
+}
+.contact-grid{ display:grid; gap:1rem; }
+@media (min-width: 900px){ .contact-grid{ grid-template-columns: 1fr 1fr; } }
+
+.panel{
+  border-radius:16px; padding:1rem 1rem 1.1rem;
+  background: rgba(255,255,255,.055); /* was .03 */
+  border:1px solid var(--edge);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 10px 24px rgba(0,0,0,.28);
+}
+.panel h3{ margin-top:0 }
+.badge{
+  width:34px; height:34px; border-radius:10px; display:grid; place-items:center;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#00142a; font-weight:900;
+  box-shadow: var(--shadow);
+}
+.list{ list-style:none; padding:0; margin:.25rem 0 0; }
+.list li{ display:flex; gap:.6rem; align-items:center; margin:.45rem 0; }
+
+/* Forms */
+label{ display:block; font-weight:700; margin:.25rem 0; }
+.input, input[type="text"], input[type="email"], textarea{
+  width:100%; padding:.85rem 1rem; border-radius:12px; border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06); color:var(--text);
+  outline:none; transition: border .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.48); }
+.input:focus, textarea:focus{
+  border-color: rgba(123,227,255,.9); background: rgba(255,255,255,.08);
+  box-shadow: 0 0 0 3px rgba(123,227,255,.18);
+}
+.input.error{ border-color: var(--err); box-shadow: 0 0 0 3px rgba(255,123,123,.18); }
+textarea{ min-height:140px; resize: vertical; }
+.form-grid{ display:grid; gap:.85rem; }
+@media (min-width: 640px){ .form-grid.two{ grid-template-columns: 1fr 1fr; } }
+.btn-row{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:.5rem; }
+
+/* ---------- Footer ---------- */
+footer.site{ color:var(--muted); text-align:center; padding:1.2rem 2rem 2.4rem; }
+footer.site a{ color:var(--brand-2); }
+
+/* ---------- Utilities ---------- */
+.prose p+ul, .prose p+ol{ margin-top:-.4rem }
+.tiny{ font-size:.9rem }
+.tight{ margin:0; padding-left:1.1rem }
+.hide{ display:none !important }
+
+/* Selection + scrollbar */
+::selection{ background: rgba(123,227,255,.35); color:#00142a }
+*{ scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.35) transparent; }
+*::-webkit-scrollbar{ height:10px; width:10px }
+*::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.3); border-radius:10px }
+*::-webkit-scrollbar-track{ background: transparent }
+
+/* Motion safety */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important }
+}
+
+/* Last section breathing room */
+section:last-of-type{ margin-bottom: 2rem; }
+
+/* =========================================================
+   IMPORTANT: We deliberately removed the OS auto-light block to
+   stop unexpected bright theme overrides. The theme toggle
+   now controls colors exclusively.
+   ========================================================= */

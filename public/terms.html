@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Terms of Service | Franklin Innovation Group</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- Sticky Header (unified) -->
+  <div class="site-header">
+    <div class="wrap container">
+      <div class="brand">Franklin Innovation Group</div>
+      <nav class="site">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero container">
+    <h1>Terms of Service</h1>
+    <p class="tagline">Simple terms for professional work.</p>
+  </header>
+
+  <main class="container prose">
+    <section>
+      <h2>Scope & Engagement</h2>
+      <p>We provide advisory and delivery services as outlined in a written proposal or statement of work (“SOW”). If there’s a conflict between these Terms and the SOW, the SOW controls.</p>
+    </section>
+
+    <section>
+      <h2>Fees & Invoicing</h2>
+      <p>Unless otherwise stated, project packages are fixed-price payable per milestone, and advisory is billed weekly. Invoices are due net 15 days. Late payments may incur a 1.5% monthly service charge.</p>
+    </section>
+
+    <section>
+      <h2>Client Responsibilities</h2>
+      <p>You’ll provide timely access to stakeholders, systems, and information. You’re responsible for the accuracy of materials you provide and for necessary rights and approvals.</p>
+    </section>
+
+    <section>
+      <h2>Changes</h2>
+      <p>Out-of-scope requests will be estimated and approved via a written change order before work proceeds.</p>
+    </section>
+
+    <section>
+      <h2>Confidentiality</h2>
+      <p>Each party will protect the other’s confidential information with reasonable care and use it only for the engagement. These obligations survive termination.</p>
+    </section>
+
+    <section>
+      <h2>Intellectual Property & Work Product</h2>
+      <p>Pre-existing materials, frameworks, and tools remain the creating party’s intellectual property. Upon full payment, you receive a non-exclusive, perpetual license to deliverables produced for you, unless the SOW grants full assignment.</p>
+    </section>
+
+    <section>
+      <h2>Warranty & Disclaimers</h2>
+      <p>We warrant that services will be performed in a professional and workmanlike manner. Except as stated, services are provided “as is” without other warranties.</p>
+    </section>
+
+    <section>
+      <h2>Limitation of Liability</h2>
+      <p>To the maximum extent permitted by law, neither party is liable for indirect, incidental, special, or consequential damages. Our total liability will not exceed the fees paid for the services giving rise to the claim.</p>
+    </section>
+
+    <section>
+      <h2>Termination</h2>
+      <p>Either party may terminate for convenience with 14 days’ written notice. You agree to pay for work performed and committed costs through the termination date.</p>
+    </section>
+
+    <section>
+      <h2>Non-Solicitation</h2>
+      <p>During the engagement and for 6 months following, neither party will directly solicit the other’s employees who were materially involved, without prior written consent.</p>
+    </section>
+
+    <section>
+      <h2>Governing Law</h2>
+      <p>These Terms are governed by the laws of the State of Georgia, without regard to conflict-of-laws principles.</p>
+    </section>
+
+    <section>
+      <h2>Entire Agreement</h2>
+      <p>These Terms together with the SOW constitute the entire agreement and supersede prior discussions regarding the services.</p>
+      <p class="muted">Last updated: <span id="tdate">2025-09-17</span></p>
+    </section>
+  </main>
+
+  <!-- Unified Footer -->
+  <footer class="site container">
+    <p>© <span id="y"></span> Franklin Innovation Group · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+    <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+  </footer>
+
+  <!-- Tiny Theme Switcher -->
+<script>
+  (function(){
+    const key = 'fig-theme';
+    const body = document.body;
+    const btn  = document.getElementById('themeToggle');
+
+    // Add "theme-light" at the end of the cycle
+    const classes = ['','theme-emerald','theme-plum','theme-light'];
+
+    function currentTheme(){
+      if(body.classList.contains('theme-emerald')) return 'theme-emerald';
+      if(body.classList.contains('theme-plum'))    return 'theme-plum';
+      if(body.classList.contains('theme-light'))   return 'theme-light';
+      return '';
+    }
+    function apply(t){
+      body.classList.remove('theme-emerald','theme-plum','theme-light');
+      if(t) body.classList.add(t);
+      // cute indicator
+      btn && (btn.textContent = t==='theme-emerald' ? '💚'
+                               : t==='theme-plum'    ? '🍇'
+                               : t==='theme-light'   ? '☀️'
+                               : '🌗'); // default navy
+    }
+
+    // Load saved choice (default = navy)
+    apply(localStorage.getItem(key) || '');
+
+    btn?.addEventListener('click', () => {
+      const cur  = currentTheme();
+      const next = classes[(classes.indexOf(cur)+1) % classes.length];
+      apply(next);
+      localStorage.setItem(key, next);
+    });
+  })();
+</script>
+</body>
+</html>

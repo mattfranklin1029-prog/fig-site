@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Franklin Innovation Group</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- Sticky Header (unified) -->
+  <div class="site-header">
+    <div class="wrap container">
+      <div class="brand">Franklin Innovation Group</div>
+      <nav class="site">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero container">
+    <h1>Smarter IT. Faster Delivery. Better Outcomes.</h1>
+    <p class="tagline">Evolving IT. Empowering People.</p>
+    <p class="lead">We help businesses cut through noise, make the right technology bets, and ship digital experiences that work—from IT advisory to full-stack websites.</p>
+    <div class="cta-row">
+      <a class="cta" href="/contact.html">Book a Free Consultation</a>
+      <a class="cta" href="/services.html">Explore Services</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Who We Help</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 12l2-2 4 4 8-8 4 4"/></svg>
+            Growth-Stage & SMB
+          </h3>
+          <p>Leaders who need clarity fast: what to buy, what to build, and how to launch without wasted spend.</p>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+            Regulated & Enterprise
+          </h3>
+          <p>Teams navigating security, compliance, and scale — without losing speed or quality.</p>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+            Product & IT Leaders
+          </h3>
+          <p>Executives who want roadmaps tied to outcomes, not shelfware — and practices that stick.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What We Do</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M10 15l5-3-5-3v6z"/></svg>
+            Advisory: Buy vs. Build
+          </h3>
+          <p>Vendor shortlists, scorecards, TCO & ROI, and contract reviews.</p>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+            Risk & Delivery Assurance
+          </h3>
+          <p>Program rescues, architecture & security reviews, and SDLC uplift.</p>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+            Websites: No-Code → Custom
+          </h3>
+          <p>Launch fast on Wix/Squarespace, scale on Retool/Liferay, or go custom with Next.js/Node/.NET.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Why Franklin</h2>
+      <ul class="checks">
+        <li>25+ years across software, infrastructure, and AI.</li>
+        <li>Vendor-neutral guidance; value over logos.</li>
+        <li>People-first change: enablement embedded.</li>
+        <li>Roadmaps tied to KPIs and measurable outcomes.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Let’s Evolve Together</h2>
+      <p>From assessments to strategy to delivery, we help you move from plan to progress.</p>
+      <p><a class="cta" href="/contact.html">Book a 30-min Intro Call</a></p>
+    </section>
+  </main>
+
+  <!-- Unified Footer -->
+  <footer class="site container">
+    <p>© <span id="y"></span> Franklin Innovation Group · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+    <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+  </footer>
+
+  <!-- Tiny Theme Switcher -->
+<script>
+  (function(){
+    const key = 'fig-theme';
+    const body = document.body;
+    const btn  = document.getElementById('themeToggle');
+
+    // Add "theme-light" at the end of the cycle
+    const classes = ['','theme-emerald','theme-plum','theme-light'];
+
+    function currentTheme(){
+      if(body.classList.contains('theme-emerald')) return 'theme-emerald';
+      if(body.classList.contains('theme-plum'))    return 'theme-plum';
+      if(body.classList.contains('theme-light'))   return 'theme-light';
+      return '';
+    }
+    function apply(t){
+      body.classList.remove('theme-emerald','theme-plum','theme-light');
+      if(t) body.classList.add(t);
+      // cute indicator
+      btn && (btn.textContent = t==='theme-emerald' ? '💚'
+                               : t==='theme-plum'    ? '🍇'
+                               : t==='theme-light'   ? '☀️'
+                               : '🌗'); // default navy
+    }
+
+    // Load saved choice (default = navy)
+    apply(localStorage.getItem(key) || '');
+
+    btn?.addEventListener('click', () => {
+      const cur  = currentTheme();
+      const next = classes[(classes.indexOf(cur)+1) % classes.length];
+      apply(next);
+      localStorage.setItem(key, next);
+    });
+  })();
+</script>
+</body>
+</html>
