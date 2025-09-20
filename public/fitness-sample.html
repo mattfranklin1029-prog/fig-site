@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forge Fitness — Sample</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Gym/Trainer sample site with programs, pricing, and sign‑up form.">
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <header class="relative isolate overflow-hidden">
+    <div class="absolute inset-0 -z-10 from-slate-900 via-indigo-900 to-slate-900 bg-gradient-to-br opacity-60"></div>
+    <div class="max-w-6xl mx-auto px-6 py-10 flex items-center justify-between">
+      <a href="portfolio.html" class="font-semibold tracking-wide flex items-center gap-2"><img src="FIG-Logo.png" class="h-6" alt="FIG Logo"/> Forge Fitness</a>
+      <nav class="hidden md:flex gap-6 text-sm text-slate-300">
+        <a href="#programs" class="hover:text-white">Programs</a>
+        <a href="#pricing" class="hover:text-white">Pricing</a>
+        <a href="#join" class="hover:text-white">Join</a>
+      </nav>
+    </div>
+    <div class="max-w-6xl mx-auto px-6 pb-16">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="text-4xl md:text-5xl font-bold">Stronger habits. Stronger you.</h1>
+          <p class="mt-4 text-slate-300">Personalized programming and small‑group classes with real accountability.</p>
+          <div class="mt-6 flex gap-4">
+            <a href="#join" class="px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600">Start 7‑day pass</a>
+            <a href="#programs" class="px-5 py-3 rounded-xl ring-1 ring-white/20 hover:bg-white/10">View programs</a>
+          </div>
+        </div>
+        <img alt="Fitness hero" class="rounded-2xl ring-1 ring-white/10" src="https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=1400&auto=format&fit=crop"/>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-16">
+    <section id="programs">
+      <h2 class="text-2xl font-semibold">Programs</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="rounded-xl p-6 ring-1 ring-white/10 bg-white/5">
+          <h3 class="font-semibold">Strength Foundations</h3>
+          <p class="mt-2 text-sm text-slate-300">3x/week coaching for beginners, 45‑min sessions.</p>
+        </div>
+        <div class="rounded-xl p-6 ring-1 ring-white/10 bg-white/5">
+          <h3 class="font-semibold">Conditioning Club</h3>
+          <p class="mt-2 text-sm text-slate-300">Intervals + mobility for endurance and recovery.</p>
+        </div>
+        <div class="rounded-xl p-6 ring-1 ring-white/10 bg-white/5">
+          <h3 class="font-semibold">Personal Coaching</h3>
+          <p class="mt-2 text-sm text-slate-300">1:1 plans, nutrition guidance, progress tracking.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="mt-16">
+      <h2 class="text-2xl font-semibold">Pricing</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="rounded-2xl p-6 ring-1 ring-white/10 bg-white/5">
+          <h3 class="font-semibold">Starter</h3>
+          <p class="mt-3 text-3xl font-bold">$59<span class="text-base font-normal">/mo</span></p>
+          <ul class="mt-3 text-sm text-slate-300 list-disc ml-5 space-y-1">
+            <li>2 classes / week</li>
+            <li>Coach check‑ins</li>
+            <li>App access</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl p-6 ring-2 ring-indigo-400 bg-white/10">
+          <h3 class="font-semibold">Core</h3>
+          <p class="mt-3 text-3xl font-bold">$99<span class="text-base font-normal">/mo</span></p>
+          <ul class="mt-3 text-sm text-slate-300 list-disc ml-5 space-y-1">
+            <li>Unlimited classes</li>
+            <li>Program tracking</li>
+            <li>Nutrition guide</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl p-6 ring-1 ring-white/10 bg-white/5">
+          <h3 class="font-semibold">Elite</h3>
+          <p class="mt-3 text-3xl font-bold">$199<span class="text-base font-normal">/mo</span></p>
+          <ul class="mt-3 text-sm text-slate-300 list-disc ml-5 space-y-1">
+            <li>1:1 coaching</li>
+            <li>Monthly assessments</li>
+            <li>Priority bookings</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="join" class="mt-16">
+      <h2 class="text-2xl font-semibold">Start your 7‑day pass</h2>
+      <form class="mt-6 grid gap-4 max-w-lg" action="mailto:admin@franklininnovationgroup.com" method="post" enctype="text/plain">
+        <input class="rounded-lg bg-white/10 ring-1 ring-white/20 px-4 py-3 placeholder-slate-400" placeholder="Name" name="name" required>
+        <input class="rounded-lg bg-white/10 ring-1 ring-white/20 px-4 py-3 placeholder-slate-400" placeholder="Email" type="email" name="email" required>
+        <textarea class="rounded-lg bg-white/10 ring-1 ring-white/20 px-4 py-3 placeholder-slate-400" placeholder="Goals" rows="4" name="message"></textarea>
+        <button class="rounded-lg bg-indigo-500 hover:bg-indigo-600 px-5 py-3 w-fit">Join now</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="text-center text-sm text-slate-400 py-10">© <span id="y4"></span> Forge Fitness</footer>
+  <script>document.getElementById('y4').textContent = new Date().getFullYear()</script>
+</body>
+</html>

@@ -5,116 +5,33 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contact | Franklin Innovation Group</title>
   <link rel="stylesheet" href="/style.css" />
+  <style>.hp-field{position:absolute;left:-10000px;opacity:0}</style>
 </head>
 <body>
-<!-- Sticky Header (unified) -->
-<div class="site-header">
-  <div class="wrap container">
-    <a href="/" class="brand">
-      <img src="/img/FIG-Logo.png" alt="Franklin Innovation Group logo" class="logo" />
-      <span>Franklin Innovation Group</span>
-    </a>
-    <nav class="site">
-      <a href="/">Home</a>
-      <a href="/about.html">About</a>
-      <a href="/services.html">Services</a>
-      <a href="/privacy.html">Privacy</a>
-      <a href="/terms.html">Terms</a>
-      <a href="/contact.html">Contact</a>
-    </nav>
-    <button class="button-ghost theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
-  </div>
-</div>
-
-  <!-- Hero -->
-  <header class="hero hero--video container">
-  <video autoplay muted loop playsinline id="heroVideo" aria-hidden="true">
-    <source src="/video/fighero.mp4" type="video/mp4">
-    <!-- Fallback image if video doesn’t load -->
-    <img src="/img/hero-fallback.png" alt="Background visual" />
-  </video>
-
-  <div class="hero-overlay">
+  <header class="site container">
     <h1>Contact</h1>
-    <p class="tagline">Let’s move from plan to progress.</p>
-  </div>
+    <p>Send a quick note—I'll reply within 1 business day.</p>
   </header>
 
   <main class="container">
-    <section class="contact-wrap">
-      <h2>Book a Conversation</h2>
-      <p class="muted">Prefer email or LinkedIn? Use the links below. Otherwise, send a quick note and I’ll reply within 1 business day.</p>
+    <form class="form-grid" method="POST" action="/api/contact" accept-charset="UTF-8">
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp-field" aria-hidden="true">
+      <label for="name">Name</label>
+      <input id="name" name="name" class="input" type="text" required autocomplete="name" placeholder="Your name">
 
-      <div class="contact-grid">
-        <!-- Direct -->
-        <div class="panel">
-          <h3><span class="badge">✉️</span> Direct</h3>
-          <ul class="list">
-            <li>
-              <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
-              <a href="mailto:youremail@example.com">youremail@example.com</a>
-            </li>
-            <li>
-              <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h4v16H4z"/><circle cx="6" cy="6" r="2"/><path d="M12 10h8v10h-8z"/></svg>
-              <a target="_blank" href="https://linkedin.com/in/matt-franklin-44033298" rel="noopener">LinkedIn</a>
-            </li>
-            <li>
-              <svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92V21a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 11 19a19.5 19.5 0 0 1-8-8A19.86 19.86 0 0 1 1 4.18 2 2 0 0 1 3 2h4.09A2 2 0 0 1 9 3.72l.7 1.63a2 2 0 0 1-.45 2.18L8 9a16 16 0 0 0 7 7l1.47-1.25a2 2 0 0 1 2.18-.45l1.63.7A2 2 0 0 1 22 16.92z"/></svg>
-              (555) 555-5555
-            </li>
-          </ul>
-        </div>
+      <label for="email">Email</label>
+      <input id="email" name="email" class="input" type="email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
 
-        <!-- Form -->
-        <div class="panel">
-          <h3><span class="badge">💬</span> Send a Message</h3>
+      <label for="msg">Message</label>
+      <textarea id="msg" name="message" class="input" required placeholder="Write your message..." rows="6"></textarea>
 
-          <!-- Success / error notice -->
-          <div id="formStatus" class="muted" aria-live="polite" style="min-height:1.2rem;"></div>
-
-          <!-- Replace action with your provider (Formspree example below) -->
-          <form class="form-grid" method="POST" action="https://formspree.io/f/YOUR_FORM_ID">
-            <!-- Honeypot (spam trap) -->
-            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;opacity:0" aria-hidden="true">
-
-            <div class="form-grid two">
-              <div>
-                <label for="name">Name</label>
-                <input id="name" name="name" class="input" type="text" required autocomplete="name" placeholder="Your name">
-              </div>
-              <div>
-                <label for="email">Email</label>
-                <input id="email" name="email" class="input" type="email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
-              </div>
-            </div>
-
-            <div>
-              <label for="msg">Message</label>
-              <textarea id="msg" name="message" class="input" required placeholder="Write your message..."></textarea>
-            </div>
-
-            <div class="btn-row">
-              <button class="cta" type="submit">Send</button>
-              <a href="mailto:youremail@example.com" class="button-ghost">Email Instead</a>
-            </div>
-
-            <!-- Optional: metadata -->
-            <input type="hidden" name="_subject" value="Website Contact — Franklin Innovation Group">
-            <input type="hidden" name="_redirect" value="https://yourdomain.com/thank-you.html">
-          </form>
-
-          <p class="help">Tip: Using <a href="https://formspree.io/" target="_blank" rel="noopener">Formspree</a> or Netlify Forms keeps your email private and avoids mailto issues on some devices. See our <a href="privacy.html">Privacy</a>.</p>
-        </div>
-      </div>
-    </section>
+      <input type="hidden" name="_redirect" value="/thank-you.html">
+      <button class="cta" type="submit">Send</button>
+    </form>
   </main>
 
-  <!-- Unified Footer -->
   <footer class="site container">
-    <p>© <span id="y"></span> Franklin Innovation Group · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+    <p>© Franklin Innovation Group</p>
   </footer>
-
-  <!-- External JS only (no inline) -->
-  <script src="/js/theme.js?v=6" defer></script>
 </body>
 </html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact | Franklin Innovation Group</title>
+  <meta name="description" content="Contact Franklin Innovation Group — websites, UX, and rapid delivery.">
+  <link rel="stylesheet" href="/style.css" />
+  <style>.hp-field{position:absolute;left:-10000px;opacity:0}</style>
+</head>
+<body>
+  <div class="site-header">
+    <div class="wrap container">
+      <a href="/" class="brand">
+        <img src="/img/FIG-Logo.png" alt="Franklin Innovation Group logo" class="logo" />
+        <span>Franklin Innovation Group</span>
+      </a>
+      <nav class="site">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html" aria-current="page">Contact</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero hero--video container">
+    <video autoplay muted loop playsinline id="heroVideo" aria-hidden="true">
+      <source src="/video/fighero.mp4" type="video/mp4">
+      <img src="/img/hero-fallback.png" alt="Background visual" />
+    </video>
+    <div class="hero-overlay">
+      <h1>Contact</h1>
+      <p class="tagline">Let’s move from plan to progress.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="contact-wrap">
+      <h2>Book a Conversation</h2>
+      <p class="muted">Prefer email or LinkedIn? Use the links below. Otherwise, send a quick note and I’ll reply within 1 business day.</p>
+
+      <div class="contact-grid">
+        <div class="panel">
+          <h3><span class="badge" aria-hidden="true">✉️</span> Direct</h3>
+          <ul class="list">
+            <li><a href="mailto:admin@franklininnovationgroup.com">admin@franklininnovationgroup.com</a></li>
+            <li><a target="_blank" href="https://linkedin.com/in/matt-franklin-44033298" rel="noopener">LinkedIn</a></li>
+            <li>(678) 439-7582</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3><span class="badge" aria-hidden="true">💬</span> Send a Message</h3>
+          <form class="form-grid" method="POST" action="/api/contact" accept-charset="UTF-8">
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp-field" aria-hidden="true">
+            <div class="form-grid two">
+              <div>
+                <label for="name">Name</label>
+                <input id="name" name="name" class="input" type="text" required autocomplete="name" placeholder="Your name">
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" class="input" type="email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
+              </div>
+            </div>
+            <div>
+              <label for="msg">Message</label>
+              <textarea id="msg" name="message" class="input" required placeholder="Write your message..." rows="6"></textarea>
+            </div>
+            <div class="btn-row">
+              <button class="cta" type="submit">Send</button>
+              <a href="mailto:admin@franklininnovationgroup.com" class="button-ghost">Email Instead</a>
+            </div>
+            <input type="hidden" name="_redirect" value="/thank-you.html">
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site container">
+    <p>© <span id="y"></span> Franklin Innovation Group · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </footer>
+</body>
+</html>

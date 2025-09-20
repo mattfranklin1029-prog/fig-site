@@ -1,27 +1,30 @@
-// server.js — Express + Microsoft Graph (v3) contact form
+// server.js (drop-in)
+// Express site + Contact form -> Microsoft Graph (app-only)
 require('dotenv').config();
-
 const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
-require('isomorphic-fetch'); // fetch for Node
+require('isomorphic-fetch');
 
-// Graph v3
+// Graph v3 imports
 const { Client } = require('@microsoft/microsoft-graph-client');
 const { ClientSecretCredential } = require('@azure/identity');
-const { TokenCredentialAuthenticationProvider } =
-  require('@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials');
+const { TokenCredentialAuthenticationProvider } = require('@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials');
 const { body, validationResult } = require('express-validator');
 
 const app = express();
 
-// --- Runtime ---
+// --- Core runtime + proxies ---
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const BASE_URL = process.env.APP_BASE_URL || 'http://localhost:' + PORT;
+
+// Optional Slack webhook
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || '';
 
 // --- Logging ---
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -39,7 +42,7 @@ app.use(helmet({
       "img-src": ["'self'", "data:", "https:"],
       "font-src": ["'self'", "data:"],
       "form-action": ["'self'"],
-      "connect-src": ["'self'"],
+      "connect-src": ["'self'", "https://hooks.slack.com"],
       "upgrade-insecure-requests": []
     }
   },
@@ -57,9 +60,9 @@ app.use(express.static(path.join(__dirname, 'public'), {
   lastModified: true,
   setHeaders: (res, filePath) => {
     if (/\.(?:js|css|png|jpg|jpeg|gif|svg|woff2?)$/.test(filePath)) {
-      res.setHeader('Cache-Control', 'public, max-age=604800, immutable'); // 7 days
+      res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
     } else {
-      res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes
+      res.setHeader('Cache-Control', 'public, max-age=300');
     }
   }
 }));
@@ -73,6 +76,30 @@ app.get(['/healthz', '/_health'], (req, res) => {
 // --- Helpers ---
 const sanitize = (s = '') => String(s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
 
+async function postToSlack({ name, email, message }) {
+  if (!SLACK_WEBHOOK_URL) return;
+  const payload = {
+    text: `📩 New website lead: ${name} (${email})`,
+    blocks: [
+      { type: "header", text: { type: "plain_text", text: "📩 New Website Lead", emoji: true } },
+      { type: "section", fields: [
+          { type: "mrkdwn", text: `*Name:*\n${sanitize(name)}` },
+          { type: "mrkdwn", text: `*Email:*\n${sanitize(email)}` }
+      ]},
+      { type: "section", text: { type: "mrkdwn", text: `*Message:*\n${sanitize(message)}` } }
+    ]
+  };
+  try {
+    await fetch(SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.warn('Slack notify failed (non-blocking).');
+  }
+}
+
 // --- Graph v3 client (app-only) ---
 const credential = new ClientSecretCredential(
   process.env.GRAPH_TENANT_ID,
@@ -85,7 +112,7 @@ const authProvider = new TokenCredentialAuthenticationProvider(credential, {
 const graph = Client.initWithMiddleware({ authProvider });
 
 async function sendGraphMail({ subject, html, replyTo }) {
-  const fromAddress = process.env.GRAPH_SENDER;
+  const fromAddress = process.env.GRAPH_SENDER; // e.g., admin@franklininnovationgroup.com
   const toAddress = process.env.GRAPH_TO_EMAIL || fromAddress;
   if (!fromAddress) throw new Error('GRAPH_SENDER not set');
 
@@ -98,6 +125,7 @@ async function sendGraphMail({ subject, html, replyTo }) {
     },
     saveToSentItems: true
   };
+
   await graph.api(`/users/${encodeURIComponent(fromAddress)}/sendMail`).post(payload);
 }
 
@@ -117,11 +145,13 @@ app.post(
     body('name').trim().isLength({ min: 2, max: 120 }),
     body('email').isEmail().normalizeEmail(),
     body('message').trim().isLength({ min: 5, max: 5000 }),
-    body('_gotcha').optional().isLength({ max: 0 }) // honeypot empty
+    body('_gotcha').optional().isLength({ max: 0 })
   ],
   async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).send('Invalid submission.');
+    if (!errors.isEmpty()) {
+      return res.status(400).send('Invalid submission.');
+    }
 
     const { name = '', email = '', message = '' } = req.body || {};
     const redirectTo = req.body._redirect || '/thank-you.html';
@@ -138,6 +168,7 @@ app.post(
 
     try {
       await sendGraphMail({ subject, html, replyTo: email });
+      postToSlack({ name, email, message }).catch(() => {});
       return res.redirect(303, redirectTo);
     } catch (err) {
       console.error('Graph sendMail error:', err?.response?.data || err);
@@ -162,5 +193,5 @@ app.use((err, req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+  console.log(`FIG site listening on ${BASE_URL} (env: ${NODE_ENV})`);
 });

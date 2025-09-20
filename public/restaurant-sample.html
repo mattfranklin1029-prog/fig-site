@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marina Bistro — Sample</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Restaurant sample site with menu highlights, hours, and booking.">
+</head>
+<body class="bg-white text-slate-800">
+  <header class="relative isolate overflow-hidden">
+    <div class="absolute inset-0 -z-10 from-sky-200 via-rose-100 to-amber-100 bg-gradient-to-br opacity-60"></div>
+    <div class="max-w-6xl mx-auto px-6 py-10">
+      <div class="flex items-center justify-between">
+        <a href="portfolio.html" class="font-semibold flex items-center gap-2"><img src="FIG-Logo.png" class="h-6" alt="FIG Logo"/> Marina Bistro</a>
+        <nav class="hidden md:flex gap-6 text-sm text-slate-700">
+          <a href="#menu" class="hover:text-slate-950">Menu</a>
+          <a href="#hours" class="hover:text-slate-950">Hours & Location</a>
+          <a href="#reserve" class="hover:text-slate-950">Reserve</a>
+        </nav>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8 items-center py-10">
+        <div>
+          <h1 class="text-4xl font-bold">Coastal flavors, city vibes</h1>
+          <p class="mt-3 text-slate-700">Seasonal fare, local seafood, and a laid‑back dining room by the water.</p>
+          <div class="mt-6 flex gap-4">
+            <a href="#reserve" class="px-5 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800">Book a table</a>
+            <a href="#menu" class="px-5 py-3 rounded-xl ring-1 ring-slate-300 hover:bg-white">See menu</a>
+          </div>
+        </div>
+        <img alt="Restaurant hero" class="rounded-2xl ring-1 ring-slate-200" src="https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=1400&auto=format&fit=crop"/>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-16">
+    <section id="menu">
+      <h2 class="text-2xl font-semibold">Menu Highlights</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <article class="rounded-xl overflow-hidden ring-1 ring-slate-200">
+          <img alt="Dish" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1400&auto=format&fit=crop"/>
+          <div class="p-5">
+            <h3 class="font-semibold">Citrus‑Herb Salmon</h3>
+            <p class="text-sm text-slate-600">Lemon beurre blanc, grilled asparagus.</p>
+          </div>
+        </article>
+        <article class="rounded-xl overflow-hidden ring-1 ring-slate-200">
+          <img alt="Dish" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1541542684-4a8692083d7a?q=80&w=1400&auto=format&fit=crop"/>
+          <div class="p-5">
+            <h3 class="font-semibold">Bistro Burger</h3>
+            <p class="text-sm text-slate-600">Smoked gouda, caramelized onion, house pickles.</p>
+          </div>
+        </article>
+        <article class="rounded-xl overflow-hidden ring-1 ring-slate-200">
+          <img alt="Dish" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1533777168198-6b8d911fa4c0?q=80&w=1400&auto=format&fit=crop"/>
+          <div class="p-5">
+            <h3 class="font-semibold">Summer Panzanella</h3>
+            <p class="text-sm text-slate-600">Heirloom tomato, sourdough, basil vinaigrette.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="hours" class="mt-16">
+      <h2 class="text-2xl font-semibold">Hours & Location</h2>
+      <div class="mt-4 grid md:grid-cols-3 gap-6 text-sm text-slate-700">
+        <div class="rounded-xl p-5 ring-1 ring-slate-200">
+          <p><span class="font-semibold">Mon–Thu</span> 11a–9p</p>
+          <p><span class="font-semibold">Fri–Sat</span> 11a–10p</p>
+          <p><span class="font-semibold">Sun</span> 11a–8p</p>
+        </div>
+        <div class="rounded-xl p-5 ring-1 ring-slate-200">
+          <p>123 Harbor St, Atlanta, GA</p>
+          <p>Parking: lot + street</p>
+        </div>
+        <div class="rounded-xl p-5 ring-1 ring-slate-200">
+          <p>Call: (678) 439‑7582</p>
+          <p>Email: admin@franklininnovationgroup.com</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="reserve" class="mt-16">
+      <h2 class="text-2xl font-semibold">Reserve a table</h2>
+      <form class="mt-6 grid gap-4 max-w-lg" action="mailto:admin@franklininnovationgroup.com" method="post" enctype="text/plain">
+        <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Name" name="name" required>
+        <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Email" type="email" name="email" required>
+        <div class="grid grid-cols-2 gap-4">
+          <input class="rounded-lg border border-slate-300 px-4 py-3" type="date" name="date" required>
+          <input class="rounded-lg border border-slate-300 px-4 py-3" type="time" name="time" required>
+        </div>
+        <select class="rounded-lg border border-slate-300 px-4 py-3" name="guests" required>
+          <option>2 guests</option>
+          <option>3 guests</option>
+          <option>4 guests</option>
+          <option>5 guests</option>
+          <option>6 guests</option>
+        </select>
+        <button class="rounded-lg bg-slate-900 text-white px-5 py-3 w-fit">Request booking</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="text-center text-sm text-slate-500 py-10">© <span id="y3"></span> Marina Bistro</footer>
+  <script>document.getElementById('y3').textContent = new Date().getFullYear()</script>
+</body>
+</html>
