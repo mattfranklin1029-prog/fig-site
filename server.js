@@ -5,7 +5,8 @@ const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
-const rateLimit = require('express-rate-limit');
+// IMPORTANT for v7:
+const { rateLimit } = require('express-rate-limit');
 const morgan = require('morgan');
 require('isomorphic-fetch'); // fetch for Node
 
@@ -65,7 +66,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // --- Health check ---
-app.get(['/healthz', '/_health'], (req, res) => {
+app.get(['/healthz', '/_health'], (_req, res) => {
   res.set('Cache-Control', 'no-store');
   res.status(200).json({ ok: true, env: NODE_ENV, time: new Date().toISOString() });
 });
@@ -73,18 +74,27 @@ app.get(['/healthz', '/_health'], (req, res) => {
 // --- Helpers ---
 const sanitize = (s = '') => String(s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
 
-// --- Graph v3 client (app-only) ---
-const credential = new ClientSecretCredential(
-  process.env.GRAPH_TENANT_ID,
-  process.env.GRAPH_CLIENT_ID,
-  process.env.GRAPH_CLIENT_SECRET
-);
-const authProvider = new TokenCredentialAuthenticationProvider(credential, {
-  scopes: ['https://graph.microsoft.com/.default']
-});
-const graph = Client.initWithMiddleware({ authProvider });
+// --- Graph v3 client (app-only) with safe initialization ---
+const requiredGraphKeys = ['GRAPH_TENANT_ID','GRAPH_CLIENT_ID','GRAPH_CLIENT_SECRET','GRAPH_SENDER'];
+const hasGraphConfig = requiredGraphKeys.every(k => !!process.env[k]);
+
+let graph = null;
+if (hasGraphConfig) {
+  const credential = new ClientSecretCredential(
+    process.env.GRAPH_TENANT_ID,
+    process.env.GRAPH_CLIENT_ID,
+    process.env.GRAPH_CLIENT_SECRET
+  );
+  const authProvider = new TokenCredentialAuthenticationProvider(credential, {
+    scopes: ['https://graph.microsoft.com/.default']
+  });
+  graph = Client.initWithMiddleware({ authProvider });
+} else {
+  console.warn('Microsoft Graph not configured; missing one of:', requiredGraphKeys.filter(k => !process.env[k]).join(', '));
+}
 
 async function sendGraphMail({ subject, html, replyTo }) {
+  if (!graph) throw new Error('Graph not configured');
   const fromAddress = process.env.GRAPH_SENDER;
   const toAddress = process.env.GRAPH_TO_EMAIL || fromAddress;
   if (!fromAddress) throw new Error('GRAPH_SENDER not set');
@@ -106,7 +116,7 @@ const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // --- Contact endpoint ---
@@ -161,6 +171,7 @@ app.use((err, req, res, _next) => {
   res.status(status).json({ ok: false, error: NODE_ENV === 'production' ? 'Server error' : String(err) });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+// Bind to 0.0.0.0 for Azure Linux containers
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server listening on port ${PORT}`);
 });
