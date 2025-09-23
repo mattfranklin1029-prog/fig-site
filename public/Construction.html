@@ -3,138 +3,681 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>StrongBuild Construction — Commercial & Residential Projects</title>
-  <meta name="description" content="StrongBuild Construction delivers safe, on-time, and high-quality commercial and residential projects.">
+  <title>StrongBuild Construction — Showcase++</title>
+  <meta name="description" content="StrongBuild Construction delivers safe, on-time, high-quality builds with a proven process and portfolio.">
+
+  <!-- Icons -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tw.css">
+
+  <!-- Page helpers -->
   <style>
-    .container{max-width:1100px;margin-inline:auto;padding-inline:1.25rem}
-    .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.06)}
-    img{font-style:italic;background:#f4f6f9}
+    body.sample { background:#f8fafc; color:#0f172a; }
+    .container{max-width:1200px;margin-inline:auto;padding-inline:1.25rem}
+    .glass { background:rgba(255,255,255,.75); backdrop-filter:saturate(140%) blur(8px); }
+    .tcard{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.07);transition:.25s ease}
+    .tcard:hover{transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,.10)}
+    .gborder{position:relative}
+    .gborder:before{content:"";position:absolute;inset:-1px;border-radius:18px;background:linear-gradient(120deg,#f59e0b,#0ea5e9,#6366f1);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:1px}
+    .ring-soft { box-shadow: inset 0 0 0 1px rgba(15,23,42,.06); }
+    .chip{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(0,0,0,.08);border-radius:9999px;padding:.375rem .75rem;background:#fff}
+    .marquee{display:flex;gap:3rem;animation:scroll 18s linear infinite}
+    @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .fade-in{opacity:0; transform:translateY(8px); animation:fade .6s ease-out .1s forwards}
+    .fade-in-2{opacity:0; transform:translateY(8px); animation:fade .6s ease-out .25s forwards}
+    .fade-in-3{opacity:0; transform:translateY(8px); animation:fade .6s ease-out .4s forwards}
+    @keyframes fade{to{opacity:1; transform:translateY(0)}}
+    img{font-style:italic;background:#eef2f7}
+
+    /* Before/After slider */
+    .ba-wrap{position:relative;overflow:hidden;border-radius:16px}
+    .ba-img{display:block;width:100%;height:100%;object-fit:cover}
+    .ba-top{position:absolute;inset:0;overflow:hidden}
+    .ba-handle{position:absolute;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:9999px;background:#fff;display:grid;place-items:center;box-shadow:0 10px 24px rgba(0,0,0,.15);border:1px solid rgba(0,0,0,.1);cursor:ew-resize}
+    .ba-line{position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,.8);backdrop-filter:blur(6px);z-index:60}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:90vw;max-height:80vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+    .lb-btn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:9999px;background:#fff;display:grid;place-items:center;box-shadow:0 10px 24px rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.15)}
+    .lb-prev{left:24px}
+    .lb-next{right:24px}
+    .lb-close{top:24px;right:24px;transform:none}
+
+    /* Modal (project details) */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,.7);backdrop-filter:blur(6px);z-index:60}
+    .modal.open{display:flex}
+    .modal-card{max-width:760px;width:92vw;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-slate-200">
-    <div class="container flex items-center justify-between py-3">
-      <a href="portfolio.html" class="flex items-center gap-3 font-bold">
-        <img src="FIG-Logo.png" alt="StrongBuild Construction" class="h-8 w-auto">
-        <span>StrongBuild Construction</span>
-      </a>
-      <nav class="hidden sm:flex gap-4 text-sm">
-        <a href="construction.html" class="font-semibold">Home</a>
-        <a href="#services">Services</a>
-        <a href="#projects">Projects</a>
-        <a href="#process">Process</a>
-        <a href="#contact" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white">Contact</a>
-      </nav>
-    </div>
-  </header>
-  <!-- Breadcrumbs -->
-<nav class="container text-sm py-3 text-slate-600" aria-label="Breadcrumb">
-  <ol class="flex items-center gap-2">
-    <li>
-      <a href="portfolio.html" class="text-slate-600 hover:text-slate-900">Portfolio</a>
-      <span class="mx-1">›</span>
-    </li>
-    <li class="text-slate-400">Construction Sample</li>
-  </ol>
-</nav>
+<script>
+  (function(){
+    const header = document.querySelector('.site-header');
+    if(!header) return;
+    const toggle = () => {
+      (window.scrollY > 12) ? header.classList.add('is-scrolled')
+                            : header.classList.remove('is-scrolled');
+    };
+    toggle();
+    window.addEventListener('scroll', toggle, {passive:true});
+  })();
+</script>
+
+<body class="sample bg-slate-50 text-slate-900">
+  <!-- Sticky Header -->
+<header class="site-header sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-slate-200">
+  <div class="container flex items-center justify-between py-3">
+    <a href="/portfolio.html" class="flex items-center gap-3 font-bold">
+      <img src="/img/FIG-Logo.png" alt="StrongBuild Construction" class="h-14 w-auto">
+      <span class="brand-name">StrongBuild Construction</span>
+    </a>
+    <nav class="hidden md:flex gap-5 text-sm">
+      <a href="#projects" class="font-semibold">Projects</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#contact" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white">Get a quote</a>
+    </nav>
+  </div>
+</header>
 
 
-  <!-- Hero -->
-  <section class="relative overflow-hidden">
-    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-amber-100 via-slate-50 to-sky-100"></div>
-    <div class="container grid lg:grid-cols-2 gap-8 items-center py-10">
-      <div>
-        <h1 class="text-4xl font-extrabold leading-tight">Building with integrity and strength.</h1>
-        <p class="mt-3 text-slate-700">Commercial and residential projects, delivered safely and on schedule.</p>
-        <div class="mt-6 flex gap-3">
-          <a href="#projects" class="px-4 py-2 rounded-lg bg-slate-900 text-white">View projects</a>
-          <a href="#contact" class="px-4 py-2 rounded-lg ring">Request a quote</a>
-        </div>
-      </div>
-      <img class="rounded-2xl ring w-full h-auto" alt="Construction site" src="/img/construction.jpg">
-    </div>
-  </section>
 
-  <!-- Services -->
-  <section id="services" class="container py-12">
-    <h2 class="text-2xl font-semibold">Our Services</h2>
-    <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card p-5">
-        <h3 class="font-semibold">General Contracting</h3>
-        <p class="mt-2 text-sm text-slate-600">From foundation to finish, complete delivery of commercial and residential builds.</p>
-      </div>
-      <div class="card p-5">
-        <h3 class="font-semibold">Renovations</h3>
-        <p class="mt-2 text-sm text-slate-600">Upgrades, adaptive reuse, and tenant improvements with minimal disruption.</p>
-      </div>
-      <div class="card p-5">
-        <h3 class="font-semibold">Project Management</h3>
-        <p class="mt-2 text-sm text-slate-600">Planning, scheduling, and oversight to keep projects on track and under budget.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects teaser -->
-  <section id="projects" class="container py-8">
-    <h2 class="text-2xl font-semibold">Recent Projects</h2>
-    <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <a href="#" class="card overflow-hidden">
-        <img class="w-full h-40 object-cover" alt="Office project" src="/img/downtown.jfif">
-        <div class="p-4 text-sm">
-          <div class="font-semibold">Downtown Office</div>
-          <p class="text-slate-600">6-story commercial build</p>
-        </div>
-      </a>
-      <a href="#" class="card overflow-hidden">
-        <img class="w-full h-40 object-cover" alt="Residential community" src="/img/residential.jfif">
-        <div class="p-4 text-sm">
-          <div class="font-semibold">Residential Community</div>
-          <p class="text-slate-600">48 homes • green design</p>
-        </div>
-      </a>
-      <a href="#" class="card overflow-hidden">
-        <img class="w-full h-40 object-cover" alt="Industrial renovation" src="/img/industrial.jfif">
-        <div class="p-4 text-sm">
-          <div class="font-semibold">Industrial Renovation</div>
-          <p class="text-slate-600">Energy-efficient upgrades</p>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <!-- Process -->
-  <section id="process" class="container py-12">
-    <h2 class="text-2xl font-semibold">How We Work</h2>
-    <ol class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
-      <li class="card p-5"><b>Pre-Construction:</b> Feasibility studies, budgeting, and permitting.</li>
-      <li class="card p-5"><b>Planning & Design:</b> Collaborating with architects, engineers, and owners.</li>
-      <li class="card p-5"><b>Construction:</b> Safe, efficient build execution with progress updates.</li>
-      <li class="card p-5"><b>Handover:</b> Final inspection, documentation, and long-term support.</li>
+  <!-- Breadcrumb -->
+  <nav class="container text-sm py-3 text-slate-600" aria-label="Breadcrumb">
+    <ol class="flex items-center gap-2 list-none">
+      <li>
+        <a href="/portfolio.html" class="hover:text-slate-900">Portfolio</a>
+        <span class="mx-1" aria-hidden="true">›</span>
+      </li>
+      <li class="text-slate-400" aria-current="page">Construction Showcase</li>
     </ol>
+  </nav>
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <img src="/img/construction-hero.png" data-base="/img/construction-hero" alt="Steel framing at sunrise" class="absolute inset-0 -z-10 w-full h-full object-cover hero-img">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-black/40 via-black/30 to-white/0"></div>
+
+    <div class="container py-16 lg:py-24 grid lg:grid-cols-12 gap-10 items-end">
+      <div class="lg:col-span-7 text-white fade-in">
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="chip bg-white/90 text-slate-800">Commercial</span>
+          <span class="chip bg-white/90 text-slate-800">Residential</span>
+          <span class="chip bg-white/90 text-slate-800">Renovations</span>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-extrabold leading-tight">Built on integrity. Delivered with precision.</h1>
+        <p class="mt-3 text-slate-100 max-w-2xl">We manage complex projects safely and on schedule—from office towers to energy-efficient remodels.</p>
+
+        <div class="mt-6 flex gap-3">
+          <a href="#projects" class="px-5 py-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">View projects</a>
+          <a href="#contact" class="px-5 py-3 rounded-lg ring-1 ring-white/70 hover:bg-white/10">Request a quote</a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5">
+        <div class="glass gborder ring-soft rounded-2xl p-5 text-slate-900 fade-in-2">
+          <dl class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <dt class="text-3xl font-extrabold text-slate-900 counter" data-target="120">0</dt>
+              <dd class="text-xs text-slate-600">Projects delivered</dd>
+            </div>
+            <div>
+              <dt class="text-3xl font-extrabold text-slate-900 counter" data-target="98">0</dt>
+              <dd class="text-xs text-slate-600">On-time rate (%)</dd>
+            </div>
+            <div>
+              <dt class="text-3xl font-extrabold text-slate-900 counter" data-target="0">0</dt>
+              <dd class="text-xs text-slate-600">Recordables YTD</dd>
+            </div>
+          </dl>
+          <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <div class="tcard p-3">
+              <div class="font-semibold">Licensed & Insured</div>
+              <div class="text-slate-600">Statewide coverage</div>
+            </div>
+            <div class="tcard p-3">
+              <div class="font-semibold">Self-perform Capable</div>
+              <div class="text-slate-600">Concrete, framing, finish</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos Marquee -->
+  <section class="container py-8">
+    <div class="tcard p-4 overflow-hidden">
+      <div class="flex items-center gap-3 text-slate-500 mb-2">
+        <span class="text-xs tracking-wide uppercase">Trusted by owners & GCs</span>
+        <div class="h-px bg-slate-200 flex-1"></div>
+      </div>
+      <div class="marquee">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <!-- duplicate for seamless loop -->
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+        <img src="/img/FIG-Logo.png" class="h-14 opacity-80" alt="Client logo">
+      </div>
+    </div>
+  </section>
+
+<!-- BEFORE/AFTER SLIDER -->
+<section class="container py-10">
+  <div class="grid lg:grid-cols-12 gap-8 items-center">
+    <!-- Copy column -->
+    <div class="lg:col-span-5">
+      <h2 class="text-2xl font-extrabold bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
+        Before & After
+      </h2>
+      <p class="mt-2 text-white/90">
+        See how a dated warehouse became a bright, efficient workspace. Drag the handle to compare.
+      </p>
+      <ul class="mt-4 text-sm text-white/80 space-y-1">
+        <li>• New envelope & glazing</li>
+        <li>• LED + daylighting controls</li>
+        <li>• High-efficiency HVAC</li>
+      </ul>
+    </div>
+
+    <!-- Slider column -->
+    <div class="lg:col-span-7">
+      <div class="ba-wrap tcard">
+        <img src="/img/getting-started-2.png" data-base="/img/before" alt="Before renovation" class="ba-img" />
+        <div class="ba-top" style="width:50%">
+          <img src="/img/after.png" data-base="/img/getting-started-2" alt="After renovation" class="ba-img" />
+        </div>
+        <div class="ba-line" style="left:50%"></div>
+        <div class="ba-handle" style="left:50%" aria-label="Drag to compare" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
+            <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8l4 4m0 0l-4 4m4-4H5"/>
+          </svg>
+        </div>
+      </div>
+      <p class="sr-only" id="ba-desc">Image comparison slider. Use left and right arrow keys to adjust.</p>
+    </div>
+  </div>
+</section>
+
+
+
+
+  <!-- PROJECTS with "View details" modal triggers -->
+  <section id="projects" class="container py-10">
+    <h2 class="text-2xl font-semibold">Signature Projects</h2>
+    <div class="mt-6 grid lg:grid-cols-3 gap-6">
+      <article class="tcard overflow-hidden">
+        <button class="block w-full text-left group project-trigger" data-project="p1">
+          <img src="/img/downtown-office.jpg" data-base="/img/downtown-office" alt="Downtown Office — 6-story commercial build" class="h-56 w-full object-cover group-hover:opacity-95 transition">
+          <div class="p-5">
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <span class="chip">Commercial</span><span class="chip">Steel</span>
+            </div>
+            <h3 class="mt-3 font-semibold text-lg">Downtown Office</h3>
+            <p class="text-sm text-slate-600">6-story core & shell with Class-A interiors. Delivered 3 weeks ahead of schedule.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-amber-600 font-medium">View details
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </button>
+      </article>
+
+      <article class="tcard overflow-hidden">
+        <button class="block w-full text-left group project-trigger" data-project="p2">
+          <img src="/img/residential-community.jpg" data-base="/img/residential-community" alt="Residential Community — 48 green homes" class="h-56 w-full object-cover group-hover:opacity-95 transition">
+          <div class="p-5">
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <span class="chip">Residential</span><span class="chip">Green</span>
+            </div>
+            <h3 class="mt-3 font-semibold text-lg">Riverbend Community</h3>
+            <p class="text-sm text-slate-600">48-home build with solar prep, ERV ventilation, and drought-tolerant landscaping.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-amber-600 font-medium">View details
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </button>
+      </article>
+
+      <article class="tcard overflow-hidden">
+        <button class="block w-full text-left group project-trigger" data-project="p3">
+          <img src="/img/industrial-renovation.jpg" data-base="/img/industrial-renovation" alt="Industrial Renovation — energy upgrades" class="h-56 w-full object-cover group-hover:opacity-95 transition">
+          <div class="p-5">
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <span class="chip">Industrial</span><span class="chip">Renovation</span>
+            </div>
+            <h3 class="mt-3 font-semibold text-lg">Eastside Retrofit</h3>
+            <p class="text-sm text-slate-600">Envelope improvements and high-efficiency mechanicals. 27% energy reduction.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-amber-600 font-medium">View details
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </button>
+      </article>
+    </div>
+  </section>
+
+<!-- GALLERY (click to open lightbox) -->
+<section id="gallery" class="container py-12">
+  <h2 class="text-2xl font-extrabold bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
+    Photo Gallery
+  </h2>
+  <p class="mt-2 text-white/90">
+    Tap any photo to view full-screen. Use arrows or swipe to navigate.
+  </p>
+  <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <img class="tcard cursor-zoom-in lb-thumb" src="/img/steel-framing.png" data-base="/img/steel-framing" alt="Steel framing detail">
+    <img class="tcard cursor-zoom-in lb-thumb" src="/img/concrete-pour.jpg" data-base="/img/concrete-pour" alt="Concrete pour at dawn">
+    <img class="tcard cursor-zoom-in lb-thumb" src="/img/interior-office.png" data-base="/img/interior-office" alt="Interior office build-out">
+    <img class="tcard cursor-zoom-in lb-thumb" src="/img/residential-community.jpg" data-base="/img/residential-community" alt="Residential siding install">
+    <img class="tcard cursor-zoom-in lb-thumb" src="/img/mechanical-room.jpg" data-base="/img/mechanical-room" alt="Mechanical room">
+    <img class="tcard cursor-zoom-in lb-thumb" src="/img/site-logistics.jpg" data-base="/img/site-logistics" alt="Site logistics">
+  </div>
+</section>
+
+
+  <!-- SERVICES -->
+  <section id="services" class="container py-12">
+    <h2 class="text-2xl font-semibold">Services</h2>
+    <div class="mt-6 grid md:grid-cols-3 gap-6">
+      <div class="gborder tcard p-6">
+        <h3 class="font-semibold">General Contracting</h3>
+        <p class="mt-2 text-sm text-slate-600">From foundation to finish. Coordinated trades, transparent schedules, quality control.</p>
+        <ul class="mt-3 text-sm text-slate-600 space-y-1">
+          <li>• Precon & estimating</li>
+          <li>• Safety & compliance</li>
+          <li>• Closeout & warranty</li>
+        </ul>
+      </div>
+      <div class="gborder tcard p-6">
+        <h3 class="font-semibold">Renovations</h3>
+        <p class="mt-2 text-sm text-slate-600">Adaptive reuse, tenant improvements, and phased remodels with minimal disruption.</p>
+        <ul class="mt-3 text-sm text-slate-600 space-y-1">
+          <li>• Live environment</li>
+          <li>• Dust/noise control</li>
+          <li>• After-hours options</li>
+        </ul>
+      </div>
+      <div class="gborder tcard p-6">
+        <h3 class="font-semibold">Project Management</h3>
+        <p class="mt-2 text-sm text-slate-600">Scheduling, logistics, and owner reporting to keep scope, cost, and time aligned.</p>
+        <ul class="mt-3 text-sm text-slate-600 space-y-1">
+          <li>• CPM schedules</li>
+          <li>• Weekly updates</li>
+          <li>• Risk registers</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process" class="container py-12">
+    <h2 class="text-2xl font-semibold">Proven Process</h2>
+    <div class="mt-6 grid lg:grid-cols-4 gap-6 text-sm">
+      <div class="tcard p-5">
+        <div class="text-xs text-slate-500 mb-1">Step 1</div>
+        <b>Pre-Construction</b>
+        <p class="mt-1 text-slate-600">Feasibility, budgeting, permitting strategy, and constructability.</p>
+      </div>
+      <div class="tcard p-5">
+        <div class="text-xs text-slate-500 mb-1">Step 2</div>
+        <b>Planning & Design</b>
+        <p class="mt-1 text-slate-600">Coordination with architects, engineers, and owners; VE recommendations.</p>
+      </div>
+      <div class="tcard p-5">
+        <div class="text-xs text-slate-500 mb-1">Step 3</div>
+        <b>Construction</b>
+        <p class="mt-1 text-slate-600">Site safety, schedule tracking, quality inspections, frequent updates.</p>
+      </div>
+      <div class="tcard p-5">
+        <div class="text-xs text-slate-500 mb-1">Step 4</div>
+        <b>Handover</b>
+        <p class="mt-1 text-slate-600">Punch, commissioning, O&M docs, and long-term support.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="relative">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-amber-50 via-slate-50 to-sky-50"></div>
+    <div class="container py-12">
+      <div class="tcard p-6 md:p-8">
+        <blockquote class="text-lg leading-relaxed text-slate-800">
+          “StrongBuild delivered our headquarters ahead of schedule and under budget.
+          Communication was top-notch and the site team’s safety culture set the bar.”
+        </blockquote>
+        <div class="mt-4 text-sm text-slate-600">— Jordan M., Owner’s Rep</div>
+      </div>
+    </div>
   </section>
 
   <!-- Contact -->
   <section id="contact" class="container py-12">
-    <h2 class="text-2xl font-semibold">Get in Touch</h2>
-    <form class="mt-6 grid gap-4 max-w-xl" action="/api/contact" method="post">
-      <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Name" name="name" required>
-      <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Email" type="email" name="email" required>
-      <textarea class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Message" rows="4" name="message"></textarea>
-      <button class="rounded-lg bg-slate-900 text-white px-5 py-3 w-fit">Send</button>
-    </form>
-    <p class="mt-3 text-sm text-slate-600">Email: info@strongbuild.com • (678) 555-1234</p>
+    <div class="tcard p-6 max-w-xl">
+      <h2 class="text-xl font-semibold">Get a quote</h2>
+      <form class="mt-4 grid gap-4" action="/api/contact" method="post" novalidate>
+        <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Name" name="name" required aria-label="Name">
+        <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Email" type="email" name="email" required aria-label="Email">
+        <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Project type (office, home, retrofit…)" name="type" aria-label="Project type">
+        <textarea class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Location & goals" rows="4" name="message" aria-label="Message"></textarea>
+        <button class="rounded-lg bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 w-fit">Send</button>
+      </form>
+      <p class="mt-3 text-sm text-slate-600">
+        Or email <a class="underline" href="mailto:info@strongbuild.com">info@strongbuild.com</a> • <span>(678) 555-1234</span>
+      </p>
+    </div>
   </section>
 
-  <footer class="container py-8 text-sm text-slate-500">
+  <!-- Sticky CTA -->
+  <a href="#contact" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 px-4 py-3 rounded-xl shadow-lg bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
+    Get a Quote
+  </a>
+
+  <footer class="container py-10 text-sm text-slate-500">
     © <span id="y"></span> StrongBuild Construction • <a href="#">Privacy</a>
   </footer>
-  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+
+  <!-- Lightbox root -->
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="Image viewer">
+    <button class="lb-btn lb-prev" aria-label="Previous image">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <img id="lb-img" alt="">
+    <button class="lb-btn lb-next" aria-label="Next image">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="lb-btn lb-close" aria-label="Close viewer">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- Project Modals -->
+  <div class="modal" id="modal-p1" aria-modal="true" role="dialog" aria-labelledby="modal-p1-title">
+    <div class="modal-card p-0 overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <h3 id="modal-p1-title" class="text-lg font-semibold">Downtown Office — Project Details</h3>
+        <button class="p-2 rounded-lg hover:bg-slate-100 close-modal" aria-label="Close details">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="p-5 grid md:grid-cols-2 gap-5">
+        <img src="/img/downtown-office.jpg" data-base="/img/downtown-office" alt="Downtown Office interior" class="rounded-lg w-full h-56 object-cover">
+        <div class="text-sm text-slate-700">
+          <p>6-story core & shell with Class-A interiors, downtown logistics, and just-in-time deliveries.</p>
+          <ul class="mt-3 space-y-1">
+            <li>• Delivery: <b>3 weeks early</b></li>
+            <li>• Safety: <b>0 recordables</b></li>
+            <li>• Sustainability: low-E glazing, ERV, LED</li>
+          </ul>
+        </div>
+      </div>
+      <div class="p-5 border-t border-slate-200 flex justify-end">
+        <a href="#contact" class="px-4 py-2 rounded-lg bg-slate-900 text-white">Discuss a similar build</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-p2" aria-modal="true" role="dialog" aria-labelledby="modal-p2-title">
+    <div class="modal-card p-0 overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <h3 id="modal-p2-title" class="text-lg font-semibold">Riverbend Community — Project Details</h3>
+        <button class="p-2 rounded-lg hover:bg-slate-100 close-modal" aria-label="Close details">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="p-5 grid md:grid-cols-2 gap-5">
+        <img src="/img/residential-community.jpg" data-base="/img/residential-community" alt="Riverbend Community street view" class="rounded-lg w-full h-56 object-cover">
+        <div class="text-sm text-slate-700">
+          <p>48-home neighborhood featuring solar-ready roofs, ERV ventilation, and water-wise landscaping.</p>
+          <ul class="mt-3 space-y-1">
+            <li>• HERS targets met</li>
+            <li>• Rapid framing cadence</li>
+            <li>• HOA coordination & phasing</li>
+          </ul>
+        </div>
+      </div>
+      <div class="p-5 border-t border-slate-200 flex justify-end">
+        <a href="#contact" class="px-4 py-2 rounded-lg bg-slate-900 text-white">Plan my subdivision</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-p3" aria-modal="true" role="dialog" aria-labelledby="modal-p3-title">
+    <div class="modal-card p-0 overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <h3 id="modal-p3-title" class="text-lg font-semibold">Eastside Retrofit — Project Details</h3>
+        <button class="p-2 rounded-lg hover:bg-slate-100 close-modal" aria-label="Close details">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="p-5 grid md:grid-cols-2 gap-5">
+        <img src="/img/industrial-renovation.jpg" data-base="/img/industrial-renovation" alt="Industrial retrofit plant floor" class="rounded-lg w-full h-56 object-cover">
+        <div class="text-sm text-slate-700">
+          <p>Energy-efficiency overhaul with envelope improvements and upgraded mechanicals; 27% reduction.</p>
+          <ul class="mt-3 space-y-1">
+            <li>• Night work sequencing</li>
+            <li>• Commissioning & M&V</li>
+            <li>• Utility rebates captured</li>
+          </ul>
+        </div>
+      </div>
+      <div class="p-5 border-t border-slate-200 flex justify-end">
+        <a href="#contact" class="px-4 py-2 rounded-lg bg-slate-900 text-white">Retrofit my facility</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS: counters, before/after slider, lightbox, modals, image fallbacks -->
+  <script>
+  (() => {
+    const $  = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const EXT_CHAIN = ['avif','webp','jpg','png','jpeg','jfif'];
+    function applyFallback(img) {
+      const base = img.dataset.base || (img.currentSrc || img.src).replace(/\.(avif|webp|jfif|jpeg|jpg|png)(\?.*)?$/i, '');
+      let i = 0;
+      const currentExtMatch = (img.getAttribute('src') || '').match(/\.(\w+)$/);
+      if (currentExtMatch) {
+        const ext = currentExtMatch[1].toLowerCase();
+        const idx = EXT_CHAIN.indexOf(ext);
+        if (idx > -1) i = idx;
+      }
+      function tryNext() {
+        if (i >= EXT_CHAIN.length) return;
+        const nextSrc = `${base}.${EXT_CHAIN[i++]}`;
+        const probe = new Image();
+        probe.onload = () => { img.src = nextSrc; img.removeAttribute('data-fallback-active'); };
+        probe.onerror = tryNext;
+        img.setAttribute('data-fallback-active','1');
+        probe.src = nextSrc + (nextSrc.includes('?') ? '&' : '?') + 'v=' + EXT_CHAIN[i-1];
+      }
+      img.addEventListener('error', function onerr() {
+        img.removeEventListener('error', onerr);
+        tryNext();
+      }, { once:true });
+      if (!img.hasAttribute('loading')) img.loading = 'lazy';
+    }
+
+    // Apply fallback to all key images (including modal + hero)
+    $$('.lb-thumb, .ba-wrap img, .hero-img, img[data-base], .modal img').forEach(applyFallback);
+
+    // Footer year
+    const y = $('#y'); if (y) y.textContent = new Date().getFullYear();
+
+    // Counters
+    (function initCounters() {
+      const counters = $$('.counter'); if (!counters.length) return;
+      if (prefersReduced) { counters.forEach(el => el.textContent = el.dataset.target || '0'); return; }
+      const ob = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const target = parseInt(el.dataset.target || '0', 10);
+          const dur = parseInt(el.dataset.duration || '900', 10);
+          const start = performance.now();
+          function tick(t) {
+            const p = Math.min(1, (t - start) / dur);
+            el.textContent = Math.round(target * p);
+            if (p < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          ob.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+      counters.forEach(c => ob.observe(c));
+    })();
+
+    // Before/After slider
+    (function initBA() {
+      const wrap = $('.ba-wrap'); if (!wrap) return;
+      const topLayer = wrap.querySelector('.ba-top');
+      const handle = wrap.querySelector('.ba-handle');
+      const line = wrap.querySelector('.ba-line');
+      let dragging = false;
+      function setPct(pct) {
+        pct = Math.max(0, Math.min(100, pct));
+        topLayer.style.width = pct + '%';
+        handle.style.left = pct + '%';
+        line.style.left = pct + '%';
+        handle.setAttribute('aria-valuenow', Math.round(pct));
+      }
+      function clientXToPct(clientX) {
+        const r = wrap.getBoundingClientRect();
+        return ((clientX - r.left) / r.width) * 100;
+      }
+      function onMove(e) {
+        if (!dragging) return;
+        const cX = e.touches ? e.touches[0].clientX : e.clientX;
+        setPct(clientXToPct(cX));
+        e.preventDefault();
+      }
+      function onDown(e){ dragging = true; onMove(e); }
+      function onUp(){ dragging = false; }
+      handle.addEventListener('mousedown', onDown);
+      window.addEventListener('mousemove', onMove, { passive:false });
+      window.addEventListener('mouseup', onUp);
+      handle.addEventListener('touchstart', onDown, { passive:true });
+      window.addEventListener('touchmove', onMove, { passive:false });
+      window.addEventListener('touchend', onUp);
+      handle.addEventListener('keydown', (e) => {
+        const cur = parseFloat(handle.style.left) || 50;
+        if (e.key === 'ArrowLeft')  setPct(cur - 2);
+        if (e.key === 'ArrowRight') setPct(cur + 2);
+      });
+      let lastPct = parseFloat(handle.style.left) || 50;
+      window.addEventListener('resize', () => setPct(lastPct));
+      setPct(isNaN(lastPct) ? 50 : lastPct);
+    })();
+
+    // Lightbox
+    (function initLightbox() {
+      const lb = document.getElementById('lightbox'); if (!lb) return;
+      const lbImg = document.getElementById('lb-img');
+      const prevBtn = lb.querySelector('.lb-prev');
+      const nextBtn = lb.querySelector('.lb-next');
+      const closeBtn = lb.querySelector('.lb-close');
+      const thumbs = $$('.lb-thumb'); if (!thumbs.length) return;
+      thumbs.forEach(applyFallback);
+      let idx = -1, touchStartX = 0;
+      function srcFor(i) {
+        const t = thumbs[i];
+        return (t.dataset.src || t.currentSrc || t.src);
+      }
+      function updateLB() {
+        if (idx < 0) return;
+        lbImg.src = srcFor(idx);
+        lbImg.alt = thumbs[idx].alt || '';
+        [ (idx+1)%thumbs.length, (idx-1+thumbs.length)%thumbs.length ].forEach(j => {
+          const p = new Image(); p.src = srcFor(j);
+        });
+      }
+      function openLB(i) {
+        idx = i; updateLB();
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden','false');
+        closeBtn.focus();
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLB() {
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+      }
+      thumbs.forEach((t,i)=> t.addEventListener('click', () => openLB(i)));
+      prevBtn.addEventListener('click', () => { idx = (idx - 1 + thumbs.length) % thumbs.length; updateLB(); });
+      nextBtn.addEventListener('click', () => { idx = (idx + 1) % thumbs.length; updateLB(); });
+      closeBtn.addEventListener('click', closeLB);
+      lb.addEventListener('click', (e) => { if (e.target === lb) closeLB(); });
+      window.addEventListener('keydown', (e) => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLB();
+        if (e.key === 'ArrowRight') nextBtn.click();
+        if (e.key === 'ArrowLeft')  prevBtn.click();
+      });
+      lb.addEventListener('touchstart', (e)=> { touchStartX = e.touches[0].clientX; }, {passive:true});
+      lb.addEventListener('touchend', (e)=> {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 30) (dx < 0 ? nextBtn : prevBtn).click();
+      }, {passive:true});
+    })();
+
+    // Project Modals
+    (function initModals() {
+      const triggers = $$('.project-trigger'); if (!triggers.length) return;
+      const modals = { p1: $('#modal-p1'), p2: $('#modal-p2'), p3: $('#modal-p3') };
+      let lastFocus = null;
+      function openModal(id) {
+        const m = modals[id]; if (!m) return;
+        lastFocus = document.activeElement;
+        m.classList.add('open');
+        const closer = m.querySelector('.close-modal'); closer && closer.focus();
+        document.body.style.overflow = 'hidden';
+        function trap(e) {
+          if (!m.classList.contains('open')) return window.removeEventListener('focusin', trap);
+          if (!m.contains(e.target)) closer && closer.focus();
+        }
+        window.addEventListener('focusin', trap);
+        m._trap = trap;
+      }
+      function closeModal(m) {
+        if (!m) return;
+        m.classList.remove('open');
+        document.body.style.overflow = '';
+        window.removeEventListener('focusin', m._trap || (()=>{}));
+        lastFocus && lastFocus.focus();
+      }
+      triggers.forEach(btn => btn.addEventListener('click', () => openModal(btn.dataset.project)));
+      $$('.modal').forEach(m => {
+        m.addEventListener('click', (e) => { if (e.target === m) closeModal(m); });
+        const closeBtn = m.querySelector('.close-modal');
+        closeBtn && closeBtn.addEventListener('click', () => closeModal(m));
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        $$('.modal.open').forEach(m => closeModal(m));
+      });
+    })();
+  })();
+  </script>
+
 </body>
 </html>

@@ -4,25 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Marina Bistro — Sample</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Restaurant sample site with menu highlights, hours, and booking.">
+
+  <!-- Site CSS then Tailwind build -->
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tw.css">
+
   <!-- Favicon + icons -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <meta name="description" content="Restaurant sample site with menu highlights, hours, and booking.">
+
+  <!-- Page-local neutralizer so /style.css doesn’t wrap sections like cards -->
+  <style>
+    body.sample { background:#ffffff; color:#0f172a; }
+    body.sample section { background:transparent !important; border:0 !important; box-shadow:none !important; border-radius:0 !important; }
+  </style>
 </head>
-<body class="bg-white text-slate-800">
+<body class="sample bg-white text-slate-800">
 
   <!-- Breadcrumb -->
-  <nav class="max-w-6xl mx-auto px-6 py-4 text-sm text-slate-600">
-    <ol class="flex items-center space-x-2">
-      <li><a href="index.html" class="text-indigo-600 hover:underline">Home</a></li>
-      <li>/</li>
-      <li><a href="portfolio.html" class="text-indigo-600 hover:underline">Portfolio</a></li>
-      <li>/</li>
-      <li class="text-slate-800 font-medium">Restaurant Sample</li>
+  <nav class="max-w-6xl mx-auto px-6 py-4 text-sm text-slate-600" aria-label="Breadcrumb">
+    <ol class="flex items-center gap-2 list-none">
+      <li><a href="/index.html" class="text-indigo-600 hover:underline">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="/portfolio.html" class="text-indigo-600 hover:underline">Portfolio</a></li>
+      <li aria-hidden="true">/</li>
+      <li class="text-slate-800 font-medium" aria-current="page">Restaurant Sample</li>
     </ol>
   </nav>
 
@@ -39,7 +49,7 @@
             <a href="#menu" class="px-5 py-3 rounded-xl ring-1 ring-slate-300 hover:bg-white">See menu</a>
           </div>
         </div>
-        <img alt="Restaurant hero" class="rounded-2xl ring-1 ring-slate-200" src="/img/bistro.jpg"/>
+        <img alt="Restaurant hero" class="rounded-2xl ring-1 ring-slate-200 w-full h-72 md:h-96 object-cover"src="/img/bistro.jpg"  />
       </div>
     </div>
   </header>
@@ -52,21 +62,21 @@
       <h2 class="text-2xl font-semibold">Menu Highlights</h2>
       <div class="mt-6 grid md:grid-cols-3 gap-6">
         <article class="rounded-xl overflow-hidden ring-1 ring-slate-200">
-          <img alt="Dish" class="h-40 w-full object-cover" src="/img/CitrusSalmon.jpg"/>
+          <img alt="Dish" class="h-40 w-full object-cover" src="/img/CitrusSalmon.jpg" />
           <div class="p-5">
             <h3 class="font-semibold">Citrus-Herb Salmon</h3>
             <p class="text-sm text-slate-600">Lemon beurre blanc, grilled asparagus.</p>
           </div>
         </article>
         <article class="rounded-xl overflow-hidden ring-1 ring-slate-200">
-          <img alt="Dish" class="h-40 w-full object-cover" src="/img/BistroBurger.jpg"/>
+          <img alt="Dish" class="h-40 w-full object-cover" src="/img/BistroBurger.jpg" />
           <div class="p-5">
             <h3 class="font-semibold">Bistro Burger</h3>
             <p class="text-sm text-slate-600">Smoked gouda, caramelized onion, house pickles.</p>
           </div>
         </article>
         <article class="rounded-xl overflow-hidden ring-1 ring-slate-200">
-          <img alt="Dish" class="h-40 w-full object-cover" src="/img/SummerPanz.jpg"/>
+          <img alt="Dish" class="h-40 w-full object-cover" src="/img/SummerPanz.jpg" />
           <div class="p-5">
             <h3 class="font-semibold">Summer Panzanella</h3>
             <p class="text-sm text-slate-600">Heirloom tomato, sourdough, basil vinaigrette.</p>

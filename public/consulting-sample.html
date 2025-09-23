@@ -4,114 +4,220 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Northstar Consulting — Sample</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Favicon + icons -->
+  <meta name="description" content="Professional services sample site with services, proof, and lead capture.">
+
+  <!-- Favicon + icons -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <meta name="description" content="Professional services sample site with services, proof, and lead capture.">
+
+  <!-- Site styles then Tailwind bundle -->
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tw.css">
+
+  <!-- Page-local neutralizer + helpers (mirrors construction page vibe, with a distinct accent) -->
+  <style>
+    /* neutralize global panel chrome for portfolio samples */
+    body.sample { background:#f8fafc; color:#1f2937; }
+    body.sample section { background:transparent !important; border:0 !important; box-shadow:none !important; border-radius:0 !important; }
+
+    /* tiny helpers used on this page only */
+    .container{max-width:1100px;margin-inline:auto;padding-inline:1.25rem}
+    .tcard{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.06);transition:transform .2s ease, box-shadow .2s ease}
+    .tcard:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.08)}
+    img{font-style:italic;background:#f4f6f9}
+    .chip{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(0,0,0,.08);border-radius:9999px;padding:.375rem .75rem;background:#fff}
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-  <header class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="portfolio.html" class="font-semibold flex items-center gap-2"><img src="FIG-Logo.png" class="h-6" alt="FIG Logo"/> Franklin Innovation Group</a>
-      <nav class="hidden md:flex gap-6 text-sm text-slate-600">
-        <a href="#services" class="hover:text-slate-900">Services</a>
-        <a href="#work" class="hover:text-slate-900">Work</a>
-        <a href="#about" class="hover:text-slate-900">About</a>
-        <a href="#contact" class="hover:text-slate-900">Contact</a>
+<body class="sample bg-slate-50 text-slate-800">
+  <!-- Header (sticky, matches construction structure) -->
+  <header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-slate-200">
+    <div class="container flex items-center justify-between py-3">
+      <a href="/portfolio.html" class="flex items-center gap-3 font-bold">
+        <img src="/img/FIG-Logo.png" alt="Northstar Consulting" class="h-8 w-auto">
+        <span>Northstar Consulting</span>
+      </a>
+      <nav class="hidden sm:flex gap-4 text-sm">
+        <a href="#services" class="font-semibold">Services</a>
+        <a href="#work">Work</a>
+        <a href="#approach">Approach</a>
+        <a href="#contact" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white">Contact</a>
       </nav>
     </div>
   </header>
 
-<!-- Breadcrumb goes here -->
-<nav class="max-w-6xl mx-auto px-6 mt-3 text-sm text-slate-500" aria-label="Breadcrumb">
-  <a href="/index.html" class="hover:underline">Home</a>
-  <span aria-hidden="true"> › </span>
-  <a href="/portfolio.html" class="hover:underline">Portfolio</a>
-  <span aria-hidden="true"> › </span>
-  <span class="text-slate-700">Consulting Sample</span>
-</nav>
+  <!-- Breadcrumbs (list-none to avoid numbers like your construction page) -->
+  <nav class="container text-sm py-3 text-slate-600" aria-label="Breadcrumb">
+    <ol class="flex items-center gap-2 list-none">
+      <li>
+        <a href="/portfolio.html" class="hover:text-slate-900">Portfolio</a>
+        <span class="mx-1" aria-hidden="true">›</span>
+      </li>
+      <li class="text-slate-400" aria-current="page">Consulting Sample</li>
+    </ol>
+  </nav>
 
-  <section class="relative isolate overflow-hidden">
-    <div class="absolute inset-0 -z-10 from-indigo-600 via-blue-600 to-cyan-600 bg-gradient-to-br opacity-10"></div>
-    <div class="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+  <!-- Hero (distinct gradient vs construction page) -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-100 via-fuchsia-50 to-sky-100"></div>
+    <div class="container grid lg:grid-cols-2 gap-10 items-center py-12">
       <div>
-        <h1 class="text-4xl font-bold">Turn ideas into shipped outcomes</h1>
-        <p class="mt-4 text-slate-600">Strategy, UX, and full‑stack builds for small teams that need results—fast.</p>
-        <div class="mt-6 flex gap-4">
-          <a href="#contact" class="px-5 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">Start a project</a>
-          <a href="#work" class="px-5 py-3 rounded-xl ring-1 ring-slate-300 hover:bg-white">See sample work</a>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="chip text-xs">Strategy</span>
+          <span class="chip text-xs">UX</span>
+          <span class="chip text-xs">Full-stack</span>
+        </div>
+        <h1 class="text-4xl font-extrabold leading-tight">Ship clarity. Unlock momentum.</h1>
+        <p class="mt-3 text-slate-700">Roadmaps, prototypes, and production builds for teams that need outcomes—fast.</p>
+        <div class="mt-6 flex gap-3">
+          <a href="#contact" class="px-4 py-2 rounded-lg bg-slate-900 text-white">Start a project</a>
+          <a href="#work" class="px-4 py-2 rounded-lg ring">See sample work</a>
         </div>
         <dl class="mt-8 grid grid-cols-3 gap-4 text-center">
-          <div><dt class="text-3xl font-bold"><span>2–4</span>wk</dt><dd class="text-xs text-slate-600">Typical delivery</dd></div>
-          <div><dt class="text-3xl font-bold">95%</dt><dd class="text-xs text-slate-600">Client satisfaction</dd></div>
-          <div><dt class="text-3xl font-bold">A+</dt><dd class="text-xs text-slate-600">SEO & performance</dd></div>
+          <div>
+            <dt class="text-3xl font-bold">2–4<wbr>wk</dt>
+            <dd class="text-xs text-slate-600">Typical delivery</dd>
+          </div>
+          <div>
+            <dt class="text-3xl font-bold">95%</dt>
+            <dd class="text-xs text-slate-600">Client satisfaction</dd>
+          </div>
+          <div>
+            <dt class="text-3xl font-bold">A+</dt>
+            <dd class="text-xs text-slate-600">SEO & performance</dd>
+          </div>
         </dl>
       </div>
-      <div class="rounded-2xl overflow-hidden ring-1 ring-slate-200">
-        <img alt="Dashboard sample" class="w-full h-full object-cover" src="/img/dashboard.png"/>
+      <div class="rounded-2xl overflow-hidden ring ring-slate-200">
+        <img alt="Consulting dashboard mockup" class="w-full h-full object-cover" src="/img/dashboard.png"/>
       </div>
     </div>
   </section>
 
-  <section id="services" class="max-w-6xl mx-auto px-6 py-16">
+  <!-- Services (card hover + slight variety vs construction) -->
+  <section id="services" class="container py-12">
     <h2 class="text-2xl font-semibold">Services</h2>
-    <div class="mt-6 grid md:grid-cols-3 gap-6">
-      <div class="rounded-xl p-6 ring-1 ring-slate-200 bg-white">
-        <h3 class="font-semibold">Site in a Week</h3>
-        <p class="mt-2 text-sm text-slate-600">One‑page site with copy, imagery, analytics, and contact form.</p>
+    <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="tcard p-5">
+        <h3 class="font-semibold">Site-in-a-Week</h3>
+        <p class="mt-2 text-sm text-slate-600">One-page site with copy, imagery, analytics, and a lead form—built to convert.</p>
+        <ul class="mt-4 text-sm text-slate-600 space-y-1">
+          <li>• Copy & layout</li>
+          <li>• Analytics & SEO basics</li>
+          <li>• Launch checklist</li>
+        </ul>
       </div>
-      <div class="rounded-xl p-6 ring-1 ring-slate-200 bg-white">
+      <div class="tcard p-5">
         <h3 class="font-semibold">Product Landing</h3>
-        <p class="mt-2 text-sm text-slate-600">Conversion‑focused page with pricing, FAQs, and checkout/lead flow.</p>
+        <p class="mt-2 text-sm text-slate-600">Conversion-focused pages with pricing, FAQs, and clear CTAs that drive trials and demos.</p>
+        <ul class="mt-4 text-sm text-slate-600 space-y-1">
+          <li>• A/B-ready sections</li>
+          <li>• Performance first</li>
+          <li>• CRM/Email hooks</li>
+        </ul>
       </div>
-      <div class="rounded-xl p-6 ring-1 ring-slate-200 bg-white">
+      <div class="tcard p-5">
         <h3 class="font-semibold">Ongoing Care</h3>
-        <p class="mt-2 text-sm text-slate-600">Monthly updates, SEO tweaks, uptime checks, and performance.</p>
+        <p class="mt-2 text-sm text-slate-600">Monthly updates, SEO tune-ups, uptime checks, and performance monitoring.</p>
+        <ul class="mt-4 text-sm text-slate-600 space-y-1">
+          <li>• 5–6 hrs/mo support</li>
+          <li>• 24–48h turnaround</li>
+          <li>• Quarterly strategy</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section id="work" class="max-w-6xl mx-auto px-6 pb-16">
-    <h2 class="text-2xl font-semibold">Sample work</h2>
-    <div class="mt-6 grid md:grid-cols-3 gap-6">
-      <figure class="rounded-xl overflow-hidden ring-1 ring-slate-200 bg-white">
+  <!-- Proof / Logos (adds pop + social proof distinct from construction)
+  <section class="container py-4">
+    <div class="tcard p-5 flex items-center justify-between gap-6 flex-wrap">
+      <span class="text-sm text-slate-500">Trusted by teams at</span>
+      <img src="/img/logo-1.svg" alt="Client logo 1" class="h-6 opacity-70">
+      <img src="/img/logo-2.svg" alt="Client logo 2" class="h-6 opacity-70">
+      <img src="/img/logo-3.svg" alt="Client logo 3" class="h-6 opacity-70">
+      <img src="/img/logo-4.svg" alt="Client logo 4" class="h-6 opacity-70">
+    </div>
+  </section> -->
+
+  <!-- Work -->
+  <section id="work" class="container py-12">
+    <h2 class="text-2xl font-semibold">Sample Work</h2>
+    <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <figure class="tcard overflow-hidden">
         <img alt="Case study A" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1400&auto=format&fit=crop"/>
-        <figcaption class="p-5 text-sm text-slate-600">B2B landing conversion +38%, page speed 98.</figcaption>
+        <figcaption class="p-5 text-sm text-slate-600">
+          B2B landing conversion +38%, Lighthouse 98/100.
+        </figcaption>
       </figure>
-      <figure class="rounded-xl overflow-hidden ring-1 ring-slate-200 bg-white">
+      <figure class="tcard overflow-hidden">
         <img alt="Case study B" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1400&auto=format&fit=crop"/>
-        <figcaption class="p-5 text-sm text-slate-600">Consulting microsite; shipped in 9 days.</figcaption>
+        <figcaption class="p-5 text-sm text-slate-600">
+          Consulting microsite shipped in 9 days.
+        </figcaption>
       </figure>
-      <figure class="rounded-xl overflow-hidden ring-1 ring-slate-200 bg-white">
+      <figure class="tcard overflow-hidden">
         <img alt="Case study C" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1400&auto=format&fit=crop"/>
-        <figcaption class="p-5 text-sm text-slate-600">SEO audit + content refresh; +120% organic.</figcaption>
+        <figcaption class="p-5 text-sm text-slate-600">
+          SEO audit + content refresh → +120% organic.
+        </figcaption>
       </figure>
     </div>
   </section>
 
-  <section id="about" class="max-w-6xl mx-auto px-6 pb-16">
-    <h2 class="text-2xl font-semibold">About</h2>
-    <p class="mt-2 text-slate-600 max-w-3xl">We help small businesses and founders turn concepts into clean, fast websites. Accessibility, performance, and clarity come first.</p>
+  <!-- Approach (varies from construction "Process") -->
+  <section id="approach" class="container py-12">
+    <h2 class="text-2xl font-semibold">Approach</h2>
+    <ol class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
+      <li class="tcard p-5"><b>Discover:</b> Clarify goals, audience, and success metrics.</li>
+      <li class="tcard p-5"><b>Design:</b> Wireframes, copy, and a visual system that serves the message.</li>
+      <li class="tcard p-5"><b>Build:</b> Fast, accessible, SEO-ready pages with clean handoff.</li>
+      <li class="tcard p-5"><b>Grow:</b> Measure, iterate, and scale what works.</li>
+    </ol>
   </section>
 
-  <section id="contact" class="max-w-6xl mx-auto px-6 pb-24">
-    <div class="rounded-2xl p-6 ring-1 ring-slate-200 bg-white max-w-xl">
+  <!-- CTA band (adds contrast/variety vs construction page) -->
+  <section class="relative">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-indigo-50 via-sky-50 to-fuchsia-50"></div>
+    <div class="container py-10">
+      <div class="tcard p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-semibold">Ready to move quickly?</h3>
+          <p class="text-sm text-slate-600">Most engagements launch in 2–4 weeks with measurable wins in month one.</p>
+        </div>
+        <a href="#contact" class="px-4 py-2 rounded-lg bg-slate-900 text-white">Book a quick intro</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="container py-12">
+    <h2 class="text-2xl font-semibold">About</h2>
+    <p class="mt-2 text-slate-700 max-w-3xl">
+      We help founders and small teams turn concepts into clean, fast websites and product pages. Accessibility, performance, and clarity come first—so your message lands and your pipeline grows.
+    </p>
+  </section>
+
+  <!-- Contact (kept simple like your consulting sample; mailto so it works anywhere) -->
+  <section id="contact" class="container py-12">
+    <div class="tcard p-6 max-w-xl">
       <h2 class="text-xl font-semibold">Let’s talk</h2>
       <form class="mt-4 grid gap-4" action="mailto:admin@franklininnovationgroup.com" method="post" enctype="text/plain">
         <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Name" name="name" required>
         <input class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Email" type="email" name="email" required>
         <textarea class="rounded-lg border border-slate-300 px-4 py-3" placeholder="Project goals" rows="4" name="message"></textarea>
-        <button class="rounded-lg bg-indigo-600 text-white px-5 py-3 w-fit">Send</button>
+        <button class="rounded-lg bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 w-fit">Send</button>
       </form>
-      <p class="mt-3 text-sm text-slate-500">Or email <a class="underline" href="mailto:admin@franklininnovationgroup.com">admin@franklininnovationgroup.com</a> • <span>(678) 439-7582</span></p>
+      <p class="mt-3 text-sm text-slate-600">
+        Or email <a class="underline" href="mailto:admin@franklininnovationgroup.com">admin@franklininnovationgroup.com</a> • <span>(678) 439-7582</span>
+      </p>
     </div>
   </section>
 
-  <footer class="text-center text-sm text-slate-500 py-10">© <span id="y2"></span> Franklin Innovation Group</footer>
+  <footer class="container py-8 text-sm text-slate-500">
+    © <span id="y2"></span> Franklin Innovation Group • <a href="#">Privacy</a>
+  </footer>
   <script>document.getElementById('y2').textContent = new Date().getFullYear()</script>
 </body>
 </html>

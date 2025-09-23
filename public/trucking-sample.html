@@ -5,44 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lloyd Wyche Trucking LLC — Logistics & Freight</title>
   <meta name="description" content="Lloyd Wyche Trucking LLC provides dependable freight hauling with 18-wheelers serving Norfolk, VA and surrounding regions.">
+
+  <!-- Favicon + icons -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Site styles then Tailwind bundle -->
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tw.css">
+
+  <!-- Page-local neutrals to prevent global FIG panel chrome -->
   <style>
+    /* mark sample pages so we can neutralize global panel chrome */
+    body.sample { background:#f8fafc; color:#1f2937; }
+    body.sample section { background:transparent !important; border:0 !important; box-shadow:none !important; border-radius:0 !important; }
+
+    /* tiny helpers used on this page only */
     .container{max-width:1100px;margin-inline:auto;padding-inline:1.25rem}
-    .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.06)}
+    .tcard{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.06)}
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="sample bg-slate-50 text-slate-800">
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-slate-200">
     <div class="container flex items-center justify-between py-3">
-      <a href="portfolio.html" class="flex items-center gap-3 font-bold">
-        <img src="FIG-Logo.png" alt="FIG" class="h-8 w-auto">
+      <!-- Brand links back to portfolio hub -->
+      <a href="/portfolio.html" class="flex items-center gap-3 font-bold text-slate-800 hover:text-slate-900">
+        <img src="/img/FIG-Logo.png" alt="FIG" class="h-8 w-auto">
         <span>Lloyd Wyche Trucking LLC</span>
       </a>
       <nav class="hidden sm:flex gap-4 text-sm">
-        <a href="#services">Services</a>
-        <a href="#fleet">Fleet</a>
-        <a href="#about">About</a>
+        <a href="#services" class="hover:underline">Services</a>
+        <a href="#fleet" class="hover:underline">Fleet</a>
+        <a href="#about" class="hover:underline">About</a>
         <a href="#contact" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white">Contact</a>
       </nav>
     </div>
   </header>
 
-    <!-- Breadcrumbs -->
-<nav class="container text-sm py-3 text-slate-600" aria-label="Breadcrumb">
-  <ol class="flex items-center gap-2">
-    <li>
-      <a href="portfolio.html" class="text-slate-600 hover:text-slate-900">Portfolio</a>
-      <span class="mx-1">›</span>
-    </li>
-    <li class="text-slate-400">Trucking Sample</li>
-  </ol>
-</nav>
+  <!-- Breadcrumbs -->
+  <nav class="container text-sm py-3 text-slate-600" aria-label="Breadcrumb">
+    <ol class="flex items-center gap-2 list-none">
+      <li>        
+        <a href="/portfolio.html" class="text-slate-800 hover:text-slate-900">Portfolio</a>
+        <span aria-hidden="true" class="mx-1">›</span>
+      </li>
+      <li class="text-slate-400" aria-current="page">Trucking Sample</li>
+    </ol>
+  </nav>
 
   <!-- Hero -->
   <section class="relative overflow-hidden">
@@ -52,11 +65,11 @@
         <h1 class="text-4xl font-extrabold leading-tight">Reliable Freight Hauling Across the East Coast</h1>
         <p class="mt-3 text-slate-700">Supplying trucks and drivers to move your goods safely, efficiently, and on schedule.</p>
         <div class="mt-6 flex gap-3">
-          <a href="#contact" class="px-4 py-2 rounded-lg bg-slate-900 text-white">Request a quote</a>
-          <a href="#fleet" class="px-4 py-2 rounded-lg ring">See our fleet</a>
+          <a href="#contact" class="px-4 py-2 rounded-lg bg-slate-900 text-white">Request a quote</a>          
+          <a href="/fleet.html" class="text-blue-700 hover:text-blue-900">See our fleet</a>
         </div>
       </div>
-      <img class="rounded-2xl ring w-full h-auto" alt="18-wheeler truck" src="\img\redtruck.jpg">
+      <img class="rounded-2xl ring w-full h-auto" alt="18-wheeler truck on highway" src="/img/redtruck.jpg">
     </div>
   </section>
 
@@ -64,15 +77,15 @@
   <section id="services" class="container py-12">
     <h2 class="text-2xl font-semibold">Our Services</h2>
     <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card p-5">
+      <div class="tcard p-5">
         <h3 class="font-semibold">Regional Hauling</h3>
         <p class="mt-2 text-sm text-slate-600">Serving Norfolk, VA and the Mid-Atlantic region with timely freight transport.</p>
       </div>
-      <div class="card p-5">
+      <div class="tcard p-5">
         <h3 class="font-semibold">Dedicated Contracts</h3>
         <p class="mt-2 text-sm text-slate-600">Reliable trucks and drivers available for recurring freight needs.</p>
       </div>
-      <div class="card p-5">
+      <div class="tcard p-5">
         <h3 class="font-semibold">Spot Loads</h3>
         <p class="mt-2 text-sm text-slate-600">Flexible capacity when you need short-notice coverage.</p>
       </div>
@@ -84,16 +97,16 @@
     <h2 class="text-2xl font-semibold">Our Fleet</h2>
     <p class="mt-2 text-slate-600 max-w-2xl">We operate three well-maintained 18-wheeler trucks with professional drivers, ready for regional and long-haul freight assignments.</p>
     <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <figure class="card overflow-hidden">
-        <img class="w-full h-40 object-cover" src="/img/van.jpg" alt="Freight truck 1">
+      <figure class="tcard overflow-hidden">
+        <img class="w-full h-40 object-cover" src="/img/van.jpg" alt="Dry van trailer • Norfolk VA">
         <figcaption class="p-4 text-sm text-slate-600">Dry van trailer • Norfolk VA</figcaption>
       </figure>
-      <figure class="card overflow-hidden">
-        <img class="w-full h-40 object-cover" src="/img/redtruck.jpg" alt="Freight truck 2">
+      <figure class="tcard overflow-hidden">
+        <img class="w-full h-40 object-cover" src="/img/redtruck.jpg" alt="Freight truck hauling • Mid-Atlantic">
         <figcaption class="p-4 text-sm text-slate-600">Freight truck hauling • Mid-Atlantic</figcaption>
       </figure>
-      <figure class="card overflow-hidden">
-        <img class="w-full h-40 object-cover" src="/img/truck.jpg" alt="Freight truck 3">
+      <figure class="tcard overflow-hidden">
+        <img class="w-full h-40 object-cover" src="/img/truck.jpg" alt="Regional deliveries • East Coast">
         <figcaption class="p-4 text-sm text-slate-600">Regional deliveries • East Coast</figcaption>
       </figure>
     </div>
@@ -102,7 +115,10 @@
   <!-- About -->
   <section id="about" class="container py-12">
     <h2 class="text-2xl font-semibold">About Us</h2>
-    <p class="mt-3 text-slate-600 max-w-3xl">Lloyd Wyche Trucking LLC is based in Norfolk, VA and built on reliability, professionalism, and personal service. With three 18-wheeler trucks and skilled drivers, we’re committed to helping shippers and brokers keep freight moving.</p>
+    <p class="mt-3 text-slate-600 max-w-3xl">
+      Lloyd Wyche Trucking LLC is based in Norfolk, VA and built on reliability, professionalism, and personal service.
+      With three 18-wheeler trucks and skilled drivers, we’re committed to helping shippers and brokers keep freight moving.
+    </p>
   </section>
 
   <!-- Contact -->
@@ -120,6 +136,6 @@
   <footer class="container py-8 text-sm text-slate-500">
     © <span id="y"></span> Lloyd Wyche Trucking LLC
   </footer>
-  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
 </body>
 </html>

@@ -34,9 +34,13 @@ app.use(helmet({
     useDefaults: true,
     directives: {
       "default-src": ["'self'"],
-      "script-src": ["'self'"],
+      // ✅ Allow Tailwind CDN so pages using the CDN script can style correctly
+      "script-src": ["'self'", "https://cdn.tailwindcss.com"],
+      "script-src-elem": ["'self'", "https://cdn.tailwindcss.com"],
+      // Styles (you already inline some + Tailwind injects styles at runtime)
       "style-src": ["'self'", "'unsafe-inline'"],
       "style-src-elem": ["'self'", "'unsafe-inline'"],
+      // Images (local + data URLs + remote like Unsplash)
       "img-src": ["'self'", "data:", "https:"],
       "font-src": ["'self'", "data:"],
       "form-action": ["'self'"],
