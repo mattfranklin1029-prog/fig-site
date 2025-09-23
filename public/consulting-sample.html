@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Northstar Consulting — Sample</title>
   <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Favicon + icons -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <meta name="description" content="Professional services sample site with services, proof, and lead capture.">
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -19,6 +25,15 @@
       </nav>
     </div>
   </header>
+
+<!-- Breadcrumb goes here -->
+<nav class="max-w-6xl mx-auto px-6 mt-3 text-sm text-slate-500" aria-label="Breadcrumb">
+  <a href="/index.html" class="hover:underline">Home</a>
+  <span aria-hidden="true"> › </span>
+  <a href="/portfolio.html" class="hover:underline">Portfolio</a>
+  <span aria-hidden="true"> › </span>
+  <span class="text-slate-700">Consulting Sample</span>
+</nav>
 
   <section class="relative isolate overflow-hidden">
     <div class="absolute inset-0 -z-10 from-indigo-600 via-blue-600 to-cyan-600 bg-gradient-to-br opacity-10"></div>

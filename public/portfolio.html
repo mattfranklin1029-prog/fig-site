@@ -4,68 +4,102 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Portfolio Samples — Franklin Innovation Group</title>
+  <meta name="description" content="A small, high-quality portfolio of sample sites: consulting, restaurant, and fitness.">
   <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="description" content="A small, high‑quality portfolio of sample sites: consulting, restaurant, and fitness.">
   <link rel="preconnect" href="https://images.unsplash.com" />
+  <!-- Favicon + icons -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
 </head>
 <body class="bg-slate-950 text-slate-100">
+  <!-- Header -->
   <header class="relative isolate overflow-hidden">
     <div class="absolute inset-0 -z-10 from-indigo-600 via-blue-600 to-indigo-700 bg-gradient-to-br opacity-30 blur-3xl"></div>
     <div class="max-w-6xl mx-auto px-6 py-8">
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <img src="FIG-Logo.png" class="h-8 w-auto" alt="FIG logo"/>
+        <!-- Brand links to Home -->
+        <a href="/index.html" class="flex items-center gap-3">
+          <img src="/img/FIG-Logo.png" class="h-8 w-auto" alt="FIG logo" />
           <span class="text-xl font-semibold tracking-wide">Franklin Innovation Group</span>
-        </div>
+        </a>
         <nav class="hidden md:flex gap-6 text-sm text-slate-300">
-          <a href="#samples" class="hover:text-white">Samples</a>
+          <a href="#samples" class="hover:text-white" aria-current="page">Samples</a>
           <a href="#process" class="hover:text-white">Process</a>
-          <a href="#contact" class="hover:text-white">Contact</a>
+          <a href="/contact.html" class="hover:text-white">Contact</a>
         </nav>
       </div>
+
+      <!-- Breadcrumb -->
+      <nav class="mt-2 text-sm text-slate-300">
+        <a href="/index.html" class="hover:underline">← Home</a>
+      </nav>
+
       <div class="py-10 text-center">
-        <h1 class="text-4xl md:text-6xl font-bold leading-tight">Lean, fast, and conversion‑focused sites</h1>
-        <p class="mt-4 text-slate-300 max-w-2xl mx-auto">Three polished demos tailored to common small‑business needs. Built with semantic HTML and Tailwind, optimized for performance and SEO basics.</p>
+        <h1 class="text-4xl md:text-6xl font-bold leading-tight">Modern websites that win clients and build trust</h1>
+        <p class="mt-4 text-slate-300 max-w-2xl mx-auto">  We design and launch polished, mobile-ready sites for small businesses. Fast turnaround, clear messaging, and built-in SEO to help you grow.</p>
         <div class="mt-8 flex items-center justify-center gap-4">
           <a href="#samples" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 ring-1 ring-white/20">View samples</a>
-          <a href="#contact" class="px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600">Get a quote</a>
+          <a href="/contact.html" class="px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600">Get a quote</a>
         </div>
       </div>
     </div>
   </header>
 
+  <!-- Main -->
   <main id="samples" class="max-w-6xl mx-auto px-6 py-16">
     <h2 class="text-2xl md:text-3xl font-semibold">Samples</h2>
     <p class="mt-2 text-slate-300">Each demo includes a hero, value props, social proof, and a contact form—everything needed to go live fast.</p>
+
     <div class="mt-8 grid md:grid-cols-3 gap-6">
-      <a href="consulting-sample.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
-        <img alt="Consulting site sample" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1527474305487-b87b222841cc?q=80&w=1400&auto=format&fit=crop"/>
+      <a href="/consulting-sample.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
+        <img alt="Consulting site sample" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1527474305487-b87b222841cc?auto=format&fit=crop&w=1400&q=80&ixlib=rb-4.0.3" />
         <div class="p-5">
           <h3 class="font-semibold text-lg group-hover:text-white">Professional Services / Consulting</h3>
-          <p class="mt-2 text-sm text-slate-300">Credibility‑first layout, services grid, testimonials, and lead capture.</p>
+          <p class="mt-2 text-sm text-slate-300">Credibility-first layout, services grid, testimonials, and lead capture.</p>
         </div>
       </a>
-      <a href="restaurant-sample.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
-        <img alt="Restaurant site sample" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1498654200943-1088dd4438ae?q=80&w=1400&auto=format&fit=crop"/>
+
+      <a href="/restaurant-sample.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
+        <img alt="Restaurant site sample" class="h-40 w-full object-cover" src="/img/bistro.jpg" />
         <div class="p-5">
           <h3 class="font-semibold text-lg group-hover:text-white">Restaurant</h3>
           <p class="mt-2 text-sm text-slate-300">Menu spotlight, hours/location, online order/booking CTA.</p>
         </div>
       </a>
-      <a href="fitness-sample.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
-        <img alt="Fitness site sample" class="h-40 w-full object-cover" src="https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=1400&auto=format&fit=crop"/>
+
+      <a href="/fitness-sample.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
+        <img alt="Fitness site sample" class="h-40 w-full object-cover" src="/img/gym.jpeg" />
         <div class="p-5">
           <h3 class="font-semibold text-lg group-hover:text-white">Gym / Trainer</h3>
-          <p class="mt-2 text-sm text-slate-300">Program highlights, pricing, class schedule, and sign‑up form.</p>
+          <p class="mt-2 text-sm text-slate-300">Program highlights, pricing, class schedule, and sign-up form.</p>
         </div>
       </a>
+      <a href="Construction.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
+        <img alt="Construction site sample" class="h-40 w-full object-cover" 
+          src="/img/industrial.jfif"/>
+        <div class="p-5">
+          <h3 class="font-semibold text-lg group-hover:text-white">Construction / Contractor</h3>
+          <p class="mt-2 text-sm text-slate-300">Project portfolio, services, safety focus, and contact form.</p>
+        </div>
+      </a>
+      <a href="trucking-sample.html" class="group rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 bg-slate-900/60">
+        <img alt="Trucking site sample" class="h-40 w-full object-cover" src="/img/redtruck.jpg"/>
+        <div class="p-5">
+          <h3 class="font-semibold text-lg group-hover:text-white">Trucking / Logistics</h3>
+          <p class="mt-2 text-sm text-slate-300">Freight hauling services with 18-wheelers in Norfolk, VA.</p>
+        </div>
+      </a>
+
     </div>
 
     <section id="process" class="mt-16">
       <h2 class="text-2xl md:text-3xl font-semibold">Simple process</h2>
       <ol class="mt-4 grid md:grid-cols-3 gap-6 text-slate-300">
-        <li class="rounded-xl p-5 bg-slate-900/60 ring-1 ring-white/10"><span class="font-semibold text-white">1. Discovery.</span> 30‑minute call to understand goals, audience, and content.</li>
-        <li class="rounded-xl p-5 bg-slate-900/60 ring-1 ring-white/10"><span class="font-semibold text-white">2. Build.</span> Draft in 3–5 days with on‑brand copy, images, and integrations.</li>
+        <li class="rounded-xl p-5 bg-slate-900/60 ring-1 ring-white/10"><span class="font-semibold text-white">1. Discovery.</span> 30-minute call to understand goals, audience, and content.</li>
+        <li class="rounded-xl p-5 bg-slate-900/60 ring-1 ring-white/10"><span class="font-semibold text-white">2. Build.</span> Draft in 3–5 days with on-brand copy, images, and integrations.</li>
         <li class="rounded-xl p-5 bg-slate-900/60 ring-1 ring-white/10"><span class="font-semibold text-white">3. Launch.</span> SEO basics, analytics, and a quick training handoff.</li>
       </ol>
     </section>

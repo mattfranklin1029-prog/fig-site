@@ -8,11 +8,12 @@ form.addEventListener("submit", async (e) => {
   try {
     const body = new URLSearchParams(new FormData(form)).toString();
 
-    const res = await fetch("/contact", {
+    const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
     });
+
 
     if (res.status === 204) {              // honeypot tripped
       statusEl.textContent = "Thanks!";
