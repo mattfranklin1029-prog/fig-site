@@ -5,39 +5,135 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contact | Franklin Innovation Group</title>
   <link rel="stylesheet" href="/style.css" />
-    <!-- Favicon + icons -->
+  <!-- Favicon + icons -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <style>.hp-field{position:absolute;left:-10000px;opacity:0}</style>
+  <style>
+    /* small page-specific polish (keeps your existing tokens) */
+    .hp-field{position:absolute;left:-10000px;opacity:0}
+    .contact-wrap{display:grid;gap:1rem}
+    @media (min-width: 900px){ .contact-wrap{grid-template-columns: 2fr 1fr;} }
+    .mini-nav{display:flex;align-items:center;gap:.75rem;justify-content:space-between;padding:.8rem 0}
+    .crumbs{font-size:.95rem;color:var(--muted)}
+    .crumbs a{color:var(--muted);text-decoration:none}
+    .crumbs a:hover{color:var(--text)}
+    .aside{border:1px solid var(--edge);border-radius:var(--radius);padding:1rem;background:rgba(255,255,255,.04)}
+    .hint{font-size:.9rem;color:var(--muted)}
+    .counter{font-size:.85rem;color:var(--muted); text-align:right; margin-top:.25rem}
+    .status{margin-top:.6rem;font-weight:700}
+  </style>
 </head>
 <body>
-  <header class="site container">
+  <!-- Top brand + Home -->
+  <div class="container mini-nav">
+    <a href="/" class="brand" style="text-decoration:none;display:flex;align-items:center;gap:.5rem;">
+      <img src="/img/FIG-Logo.png" alt="FIG logo" class="logo" style="height:30px;width:auto">
+      Franklin Innovation Group
+    </a>
+    <nav>
+      <a href="/" class="button-ghost">Home</a>
+    </nav>
+  </div>
+
+  <!-- Breadcrumbs -->
+  <nav class="container crumbs" aria-label="Breadcrumb">
+    <a href="/">Home</a> <span aria-hidden="true">›</span> <span>Contact</span>
+  </nav>
+
+  <header class="site container" style="margin-top:.5rem">
     <h1>Contact</h1>
-    <p>Send a quick note—I'll reply within 1 business day.</p>
+    <p class="muted">Questions, quotes, or ideas—send a quick note and we’ll reply within one business day.</p>
   </header>
 
-  <main class="container">
-    <form class="form-grid" method="POST" action="/api/contact" accept-charset="UTF-8">
+  <main class="container contact-wrap">
+    <!-- Form -->
+    <form class="form-grid" method="POST" action="/api/contact" accept-charset="UTF-8" id="contact-form">
+      <!-- honeypot -->
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp-field" aria-hidden="true">
+
       <label for="name">Name</label>
       <input id="name" name="name" class="input" type="text" required autocomplete="name" placeholder="Your name">
 
       <label for="email">Email</label>
       <input id="email" name="email" class="input" type="email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
 
+      <label for="phone">Phone <span class="hint">(optional)</span></label>
+      <input id="phone" name="phone" class="input" type="tel" autocomplete="tel" inputmode="tel" placeholder="(###) ###-####">
+
+      <label for="subject">Subject <span class="hint"></span></label>
+      <select id="subject" name="subject" class="input">
+        <option value="">Select a topic…</option>
+        <option>New website</option>
+        <option>Site refresh</option>
+        <option>Support / update</option>
+        <option>Something else</option>
+      </select>
+
       <label for="msg">Message</label>
-      <textarea id="msg" name="message" class="input" required placeholder="Write your message..." rows="6"></textarea>
+      <textarea id="msg" name="message" class="input" required placeholder="How can we help?" rows="6" maxlength="2000" aria-describedby="msg-hint"></textarea>
+      <div id="msg-hint" class="counter"><span id="msg-count">0</span>/2000</div>
 
       <input type="hidden" name="_redirect" value="/thank-you.html">
-      <button class="cta" type="submit">Send</button>
+
+      <div class="hint">
+        We’ll only use your info to respond to this inquiry. See our <a href="/privacy.html">privacy policy</a>.
+      </div>
+
+      <button class="cta" type="submit" id="submit-btn">Send message</button>
+      <div class="status" id="form-status" aria-live="polite"></div>
     </form>
+
+    <!-- Quick info / alternate contact -->
+    <aside class="aside">
+      <h3 style="margin-top:0">Prefer email or a quick call?</h3>
+      <ul class="list" style="list-style:none;padding:0;margin:.25rem 0 1rem">
+        <li><strong>Email:</strong> <a href="mailto:admin@franklininnovationgroup.com">admin@franklininnovationgroup.com</a></li>
+        <li><strong>Phone:</strong> (678) 439-7582</li>
+        <li><strong>Hours:</strong> Mon–Fri, 9a–5p ET</li>
+      </ul>
+
+      <h4 style="margin:.8rem 0 .4rem">What to expect</h4>
+      <p class="hint">You’ll get a confirmation on this page. We follow up by email (usually same day) with next steps or a quick question or two.</p>
+
+      <h4 style="margin:.8rem 0 .4rem">Links</h4>
+      <ul class="list" style="list-style:none;padding:0;margin:0">
+        <li><a href="/">← Back to Home</a></li>
+        <li><a href="/portfolio.html">View portfolio</a></li>
+        <li><a href="/services.html">Services</a></li>
+      </ul>
+    </aside>
   </main>
 
   <footer class="site container">
-    <p>© Franklin Innovation Group</p>
+    <p>© <span id="y"></span> Franklin Innovation Group</p>
   </footer>
+
+  <script>
+    // Year
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Message character counter
+    const msg = document.getElementById('msg');
+    const count = document.getElementById('msg-count');
+    if (msg && count){ 
+      const update = () => { count.textContent = msg.value.length; };
+      msg.addEventListener('input', update); update();
+    }
+
+    // Light UX feedback on submit
+    const form = document.getElementById('contact-form');
+    const statusEl = document.getElementById('form-status');
+    const btn = document.getElementById('submit-btn');
+
+    if (form){
+      form.addEventListener('submit', () => {
+        if (btn){ btn.disabled = true; btn.textContent = 'Sending…'; }
+        if (statusEl){ statusEl.textContent = 'Sending your message…'; }
+      }, { passive:true });
+    }
+  </script>
 </body>
 </html>

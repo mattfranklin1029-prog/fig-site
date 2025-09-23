@@ -529,3 +529,36 @@ header.hero h1{
    stop unexpected bright theme overrides. The theme toggle
    now controls colors exclusively.
    ========================================================= */
+/* Force select to match input look */
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-color: #fff;   /* light background by default */
+  color: #111;              /* dark readable text */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+/* Dark theme override */
+@media (prefers-color-scheme: dark) {
+  select.input {
+    background-color: #1e293b; /* slate-800 */
+    color: #f8fafc;            /* slate-50 */
+    border-color: #475569;     /* slate-600 */
+  }
+}
+
+/* Add a small arrow indicator */
+select.input {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='currentColor' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.25 7.5L10 12.25 14.75 7.5H5.25z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem; /* make room for arrow */
+}
