@@ -1,16 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-
+module.exports = {  
   content: [
-  "./public/portfolio.html",
-  "./public/consulting-sample.html",
-  "./public/restaurant-sample.html",
-  "./public/fitness-sample.html",
-  "./public/construction.html",
-  "./public/trucking-sample.html",
-],
+      "./public/**/*.html",          // all your static pages
+    "./src/**/*.{js,ts,jsx,tsx}",  // if any client scripts add classes
+    "./views/**/*.{html,ejs}"      // if you have server templates
+  ],  
   theme: { extend: {} },
-
-    corePlugins: { preflight: false },
+  corePlugins: { preflight: false },
+     container: false,  // <- stops Tailwind from outputting .container
   plugins: [],
 }

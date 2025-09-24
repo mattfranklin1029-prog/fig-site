@@ -227,13 +227,48 @@ nav[aria-label="Breadcrumb"] ol{ list-style:none; margin:0; padding:0 }
 nav[aria-label="Breadcrumb"] li{ display:flex; align-items:center; gap:.4rem }
 
 /* ---------- Bio / Profile ---------- */
+/* ---------- Bio / Profile (responsive, larger image) ---------- */
 .bio-grid{ display:grid; gap:1rem }
-.profile-img, .avatar{ width:96px; height:96px }
-@media (min-width:600px){ .profile-img, .avatar{ width:128px; height:128px } }
-@media (min-width:920px){ .profile-img, .avatar{ width:160px; height:160px } }
-.profile-img{ float:left; width:160px; height:160px; margin:0 1.2rem .6rem 0; border-radius:50%; overflow:hidden; shape-outside:circle(); clip-path:circle() }
+
+/* Default (mobile) size */
+.profile-img, .avatar { width:120px; height:120px }
+
+/* Tablet */
+@media (min-width:600px){
+  .profile-img, .avatar { width:160px; height:160px }
+}
+
+/* Desktop — make it nice and big */
+@media (min-width:920px){
+  .profile-img, .avatar { width:200px; height:200px }
+}
+
+/* Float + circular crop + better wrap spacing */
+.profile-img{
+  float:left;
+  width:200px;            /* keeps desktop size even if media queries fail */
+  height:200px;
+  margin:0 1.5rem .8rem 0;/* a bit more room for larger image */
+  border-radius:50%;
+  overflow:hidden;
+  shape-outside:circle();
+  clip-path:circle();
+  box-shadow: var(--shadow);
+  border:1px solid var(--edge);
+}
 .profile-img img{ width:100%; height:100%; object-fit:cover; display:block }
-.bio .cta{ clear:left; display:inline-block; margin-top:.6rem }
+
+/* CTA sits below the floated image cleanly */
+.bio .cta{
+  clear:left;
+  display:inline-block;
+  margin-top:.6rem;
+}
+
+/* Tighten snapshot list if used nearby */
+.bio .tight{ margin:.35rem 0 0; padding-left:0 }
+.bio .tight li{ margin:.25rem 0 }
+
 
 /* ---------- Contact page polish ---------- */
 .contact-wrap{
@@ -338,3 +373,121 @@ body.theme-light .hero-video{ filter: blur(1px) brightness(.9) saturate(1.04) }
 
 /* Last section breathing room */
 section:last-of-type{ margin-bottom: 2rem }
+
+/* ===== Before & After legibility (works site-wide) ===== */
+
+/* 1) High-contrast text on dark backgrounds */
+.on-dark h2 { color:#eef3ff; text-shadow:0 2px 8px rgba(0,0,0,.45); }
+.on-dark p,
+.on-dark li { color:#dbe4fb; }
+
+/* slightly bolder + tighter for headings on dark */
+.on-dark h2 { font-weight:900; letter-spacing:.15px; }
+
+/* 2) Optional translucent panel for copy (use on the BA text column) */
+.glass-strong{
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: 0 10px 28px rgba(0,0,0,.28);
+  backdrop-filter: saturate(130%) blur(8px);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
+
+/* 3) If the BA section sits on a very dark panel, lighten the bullets slightly */
+.on-dark .checks li::before { color: #7be3ff; }
+
+/* 4) Safety net: if a section contains the before/after slider, treat its left column as "on dark"
+   (uses :has, which is supported in modern browsers; harmless if not supported) */
+section:has(.ba-wrap) .ba-copy h2 { color:#eef3ff; text-shadow:0 2px 8px rgba(0,0,0,.45); }
+section:has(.ba-wrap) .ba-copy p,
+section:has(.ba-wrap) .ba-copy li { color:#dbe4fb; }
+
+/* Solid header once you scroll a bit */
+.site-header { transition: background-color .2s ease, box-shadow .2s ease, border-color .2s ease }
+.site-header.is-scrolled{
+  background: #ffffff;
+  border-bottom-color: #e2e8f0;    /* slate-200 */
+  box-shadow: 0 6px 16px rgba(2, 6, 23, .08);
+}
+
+/* Header link colors:
+   - default (translucent/dark header): keep your earlier nav.site a rules (light text)
+   - when scrolled OR light theme: switch to dark-on-light */
+.site-header.is-scrolled nav a,
+body.theme-light .site-header nav a { color:#0f172a }         /* slate-900 */
+.site-header.is-scrolled nav a:hover,
+body.theme-light .site-header nav a:hover { color:#1d4ed8 }   /* blue-700 */
+
+
+/* Anchor offset so sections aren’t hidden under the sticky header */
+[id]{ scroll-margin-top: 84px }   /* roughly header height */
+@media (max-width: 640px){ [id]{ scroll-margin-top: 72px } }
+
+/* ==== Bio layout (avatar + copy + snapshot) ==== */
+.bio{
+  display:grid;
+  gap:1rem;
+}
+
+/* Desktop: 2 columns (main + snapshot) */
+@media (min-width: 900px){
+  .bio{
+    grid-template-columns: 1fr 360px;   /* left grows, right fixed */
+    align-items: stretch;
+  }
+}
+
+/* Main row: avatar + text */
+.bio-flex{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1.1rem 1.25rem;
+  align-items: center;                  /* vertically center text to headshot */
+  padding: 1rem 1.1rem;
+  border:1px solid var(--edge);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.055);
+  box-shadow: var(--shadow);
+}
+
+/* Avatar */
+.profile-img{
+  width:140px; height:140px; border-radius:50%;
+  overflow:hidden; flex:0 0 auto;
+  box-shadow: var(--shadow);
+  border:1px solid var(--edge);
+}
+.profile-img img{ width:100%; height:100%; object-fit:cover; display:block }
+
+/* Text block */
+.bio-content{ min-width:0 }             /* prevent overflow/wrapping issues */
+.bio-content p{ margin:.35rem 0 .6rem }
+.bio .cta{ margin-top:.4rem }
+
+/* Snapshot card */
+.bio-card{
+  padding: 1rem 1.1rem;
+  border:1px solid var(--edge);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.055);
+  box-shadow: var(--shadow);
+}
+
+/* Mobile stacking */
+@media (max-width: 899.98px){
+  .bio-flex{
+    grid-template-columns: 110px 1fr;
+    padding: .9rem 1rem;
+  }
+  .profile-img{ width:110px; height:110px }
+  .bio-card{ margin-top:.25rem }
+}
+
+/* Optional: make Snapshot list tighter + aligned */
+.bio-card .tight{ margin:.35rem 0 0; padding-left: 0 }
+.bio-card .tight li{ margin:.25rem 0 }
+
+.site-header .wrap.container { /* your sizing rules */ }
+
+
