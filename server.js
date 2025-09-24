@@ -124,41 +124,78 @@ const contactLimiter = rateLimit({
 });
 
 // --- Contact endpoint ---
+// --- Contact endpoint (drop-in replacement) ---
 app.post(
   '/api/contact',
   contactLimiter,
   [
-    body('name').trim().isLength({ min: 2, max: 120 }),
-    body('email').isEmail().normalizeEmail(),
-    body('message').trim().isLength({ min: 5, max: 5000 }),
-    body('_gotcha').optional().isLength({ max: 0 }) // honeypot empty
+    body('name').trim().isLength({ min: 2, max: 120 }).withMessage('name'),
+    body('email').isEmail().normalizeEmail().withMessage('email'),
+    body('message').trim().isLength({ min: 1, max: 5000 }).withMessage('message'),
+    body('_gotcha').optional().isLength({ max: 0 }).withMessage('honeypot')
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).send('Invalid submission.');
-
-    const { name = '', email = '', message = '' } = req.body || {};
-    const redirectTo = req.body._redirect || '/thank-you.html';
-    const subject = `FIG Website Contact — ${sanitize(name)}`;
-    const html = `
-      <div style="font-family:system-ui,Segoe UI,Arial,sans-serif">
-        <h2 style="margin:0 0 8px">New Website Inquiry</h2>
-        <p><strong>Name:</strong> ${sanitize(name)}</p>
-        <p><strong>Email:</strong> ${sanitize(email)}</p>
-        <p><strong>Message:</strong></p>
-        <div style="white-space:pre-wrap">${sanitize(message)}</div>
-        <hr><p style="color:#6b7280">Sent from franklininnovationgroup.com</p>
-      </div>`;
-
+    // Helpful server-side logging so we can see what arrived
     try {
+      // Log minimal request context (no PII beyond field presence/lengths)
+      const b = req.body || {};
+      console.log('CONTACT SUBMIT',
+        {
+          hasBody: !!req.body,
+          nameLen: (b.name || '').length,
+          emailPresent: !!b.email,
+          msgLen: (b.message || '').length,
+          redirect: !!b._redirect
+        }
+      );
+
+      // Validator errors → log which fields failed
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        console.error('Validation errors:', errors.array().map(e => e.msg || e.param));
+        // If it's a form post (has _redirect), send a simple HTML error
+        if (b._redirect) return res.status(400).send('Invalid submission.');
+        return res.status(400).json({ ok: false, error: 'Invalid submission.' });
+      }
+
+      const name = (b.name || '').trim();
+      const email = (b.email || '').trim();
+      const message = (b.message || '').trim();
+      const redirectTo = b._redirect || '/thank-you.html';
+
+      const subject = `FIG Website Contact — ${sanitize(name)}`;
+      const html = `
+        <div style="font-family:system-ui,Segoe UI,Arial,sans-serif">
+          <h2 style="margin:0 0 8px">New Website Inquiry</h2>
+          <p><strong>Name:</strong> ${sanitize(name)}</p>
+          <p><strong>Email:</strong> ${sanitize(email)}</p>
+          <p><strong>Message:</strong></p>
+          <div style="white-space:pre-wrap">${sanitize(message)}</div>
+          <hr><p style="color:#6b7280">Sent from franklininnovationgroup.com</p>
+        </div>`;
+
       await sendGraphMail({ subject, html, replyTo: email });
-      return res.redirect(303, redirectTo);
+
+      // If it came from your HTML form, do the thank-you redirect
+      if (redirectTo) return res.redirect(303, redirectTo);
+
+      // Fallback JSON success (for programmatic callers)
+      return res.json({ ok: true, message: 'Thanks! Your message has been sent.' });
     } catch (err) {
-      console.error('Graph sendMail error:', err?.response?.data || err);
-      return res.status(502).send('Unable to send message right now.');
+      // Log rich error details; keep response generic
+      console.error('CONTACT SEND FAIL', {
+        status: err?.status || err?.statusCode,
+        code: err?.code,
+        message: err?.message,
+        graphBody: err?.response?.data || err?.body
+      });
+      // For form posts, return simple text to keep UX clean
+      if (req.body?._redirect) return res.status(502).send('Unable to send message right now.');
+      return res.status(502).json({ ok: false, error: 'Unable to send message right now.' });
     }
   }
 );
+
 
 // --- 404 ---
 app.use((req, res) => {
