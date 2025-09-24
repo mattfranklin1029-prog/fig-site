@@ -1,5 +1,5 @@
 /* ===================================================================
-   Franklin Innovation Group — Site Styles (v3.2 modern, accessible)
+   Franklin Innovation Group — Site Styles (v3.2 clean/aligned)
    =================================================================== */
 
 /* ---------- Core Tokens (Default / Navy - DARK) ---------- */
@@ -28,15 +28,15 @@
   --radius: 18px;
   --shadow: 0 10px 28px rgba(0,0,0,.28);
   --shadow-lg: 0 14px 34px rgba(0,0,0,.36);
-  --maxw: 1200px;
-  --maxw-wide: 1500px;
+  --maxw: 1200px;        /* site max width */
+  --maxw-wide: 1500px;   /* available if you want wider sections later */
 
   /* Form defaults (dark baseline) */
   --form-bg: rgba(255,255,255,.06);
   --form-border: rgba(255,255,255,.16);
   --form-text: var(--text);
   --form-ph: rgba(255,255,255,.48);
-  --form-focus-border: #3b82f6;           /* blue-600/700 fam */
+  --form-focus-border: #3b82f6;
   --form-focus-ring: rgba(59,130,246,.25);
 }
 
@@ -69,11 +69,11 @@ body.theme-light{
 
   /* Light-theme form tokens */
   --form-bg:#ffffff;
-  --form-border:#64748b;                 /* slate-500 */
-  --form-text:#0b1220;                   /* near-black */
-  --form-ph:#64748b;                     /* slate-500 */
-  --form-focus-border:#1d4ed8;           /* blue-700 */
-  --form-focus-ring:rgba(29,78,216,.28); /* blue-700 @28% */
+  --form-border:#64748b;
+  --form-text:#0b1220;
+  --form-ph:#64748b;
+  --form-focus-border:#1d4ed8;
+  --form-focus-ring:rgba(29,78,216,.28);
 }
 
 /* ---------- Reset / Base ---------- */
@@ -90,8 +90,9 @@ body{
 }
 img{ max-width:100%; height:auto; display:block; image-rendering:auto }
 
-/* Containers */
+/* ---------- Containers ---------- */
 .container{ width:min(100%, calc(var(--maxw) + 4rem)); margin-inline:auto; padding-inline:2rem; }
+.page{      width:min(100%, calc(var(--maxw) + 4rem)); margin-inline:auto; padding-inline:2rem; }
 
 /* ---------- Header (sticky glass) ---------- */
 .site-header{
@@ -99,8 +100,16 @@ img{ max-width:100%; height:auto; display:block; image-rendering:auto }
   backdrop-filter: blur(10px);
   background: linear-gradient(180deg, rgba(10,12,22,.65), rgba(10,12,22,.25));
   border-bottom: 1px solid rgba(255,255,255,.10);
+  transition: background-color .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-.site-header .wrap{ display:flex; align-items:center; gap:1rem; padding:.7rem 2rem; }
+
+/* single, consistent wrapper rule (no side padding; container provides gutters) */
+.site-header .wrap,
+.site-header .page{
+  display:flex; align-items:center; gap:1rem;
+  padding-block:.7rem;
+  padding-inline:0;
+}
 
 .logo{ height:34px; width:auto; display:block }
 @media (max-width:560px){ .logo{ height:26px } }
@@ -128,9 +137,23 @@ nav.site a:hover{ transform:translateY(-1px); border-color: rgba(255,255,255,.2)
 }
 .theme-toggle:focus-visible{ outline:3px solid rgba(123,227,255,.5); outline-offset:2px }
 
-/* ---------- Hero ---------- */
+/* Solid header once you scroll a bit */
+.site-header.is-scrolled{
+  background:#ffffff;
+  border-bottom-color:#e2e8f0;
+  box-shadow:0 6px 16px rgba(2, 6, 23, .08);
+}
+
+/* Header link colors when scrolled or in light theme */
+.site-header.is-scrolled nav a,
+body.theme-light .site-header nav a { color:#0f172a }
+.site-header.is-scrolled nav a:hover,
+body.theme-light .site-header nav a:hover { color:#1d4ed8 }
+
+/* ---------- Hero (video variant) ---------- */
 header.hero{
-  text-align:center; padding: 2.6rem 2rem 1.1rem; position:relative;
+  position:relative; overflow:hidden; text-align:center;
+  padding: 2.6rem 0 1.1rem;    /* container already provides horizontal gutters */
   background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.07));
   border-radius: var(--radius);
 }
@@ -139,6 +162,30 @@ header.hero::after{
   background: linear-gradient(90deg, transparent, var(--brand), var(--brand-2), transparent);
   opacity:.35;
 }
+
+/* make hero width match the site container to align edges perfectly */
+.hero.hero--video.container{
+  width:min(100%, calc(var(--maxw) + 4rem));
+}
+
+/* Video behind text — support both class & id used in your pages */
+.hero-video,
+#heroVideo{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; z-index:-1;
+  filter: blur(1.5px) brightness(.55) saturate(1.08);
+  transform:translateZ(0);
+}
+
+/* Foreground hero copy — support both classnames used */
+.hero-content,
+.hero-overlay{
+  position:relative; z-index:1;
+  width:min(100%, var(--maxw));
+  padding:1.6rem 0;
+  margin-inline:auto;
+}
+
 h1{
   margin:.1rem 0 .35rem; font-weight:900; letter-spacing:.2px;
   font-size: clamp(2rem, 1.2rem + 3.2vw, 3.1rem);
@@ -227,7 +274,6 @@ nav[aria-label="Breadcrumb"] ol{ list-style:none; margin:0; padding:0 }
 nav[aria-label="Breadcrumb"] li{ display:flex; align-items:center; gap:.4rem }
 
 /* ---------- Bio / Profile ---------- */
-/* ---------- Bio / Profile (responsive, larger image) ---------- */
 .bio-grid{ display:grid; gap:1rem }
 
 /* Default (mobile) size */
@@ -246,9 +292,8 @@ nav[aria-label="Breadcrumb"] li{ display:flex; align-items:center; gap:.4rem }
 /* Float + circular crop + better wrap spacing */
 .profile-img{
   float:left;
-  width:200px;            /* keeps desktop size even if media queries fail */
-  height:200px;
-  margin:0 1.5rem .8rem 0;/* a bit more room for larger image */
+  width:200px; height:200px;
+  margin:0 1.5rem .8rem 0;
   border-radius:50%;
   overflow:hidden;
   shape-outside:circle();
@@ -259,16 +304,11 @@ nav[aria-label="Breadcrumb"] li{ display:flex; align-items:center; gap:.4rem }
 .profile-img img{ width:100%; height:100%; object-fit:cover; display:block }
 
 /* CTA sits below the floated image cleanly */
-.bio .cta{
-  clear:left;
-  display:inline-block;
-  margin-top:.6rem;
-}
+.bio .cta{ clear:left; display:inline-block; margin-top:.6rem; }
 
 /* Tighten snapshot list if used nearby */
 .bio .tight{ margin:.35rem 0 0; padding-left:0 }
 .bio .tight li{ margin:.25rem 0 }
-
 
 /* ---------- Contact page polish ---------- */
 .contact-wrap{
@@ -344,7 +384,7 @@ footer.site a{ color:var(--brand-2) }
 :where(a, button, input, textarea, select):focus-visible{
   outline:3px solid rgba(29,78,216,.45); outline-offset:2px; border-radius:10px;
 }
-button, .button-ghost, .cta{ min-height:44px } /* touch target */
+button, .button-ghost, .cta{ min-height:44px }
 nav.site a{ min-height:36px }
 
 @media (prefers-reduced-motion: reduce){
@@ -362,29 +402,14 @@ nav.site a{ min-height:36px }
 *::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.3); border-radius:10px }
 *::-webkit-scrollbar-track{ background: transparent }
 
-/* ---------- Hero (video variant) ---------- */
-header.hero{ position:relative; overflow:hidden }
-header.hero h1{ text-shadow: 0 2px 10px rgba(0,0,0,.55) }
-.hero-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-1; filter: blur(1.5px) brightness(.55) saturate(1.08); transform:translateZ(0) }
-.hero-content{ position:relative; z-index:1; width:min(100%,1000px); padding:1.6rem 0; margin-inline:auto }
-.hero.hero--video.container{ width:min(100%, calc(var(--maxw-wide) + 4rem)) }
-body.theme-light .hero-video{ filter: blur(1px) brightness(.9) saturate(1.04) }
-@media (max-height:760px){ header.hero{ min-height:420px } }
-
 /* Last section breathing room */
 section:last-of-type{ margin-bottom: 2rem }
 
 /* ===== Before & After legibility (works site-wide) ===== */
-
-/* 1) High-contrast text on dark backgrounds */
 .on-dark h2 { color:#eef3ff; text-shadow:0 2px 8px rgba(0,0,0,.45); }
-.on-dark p,
-.on-dark li { color:#dbe4fb; }
-
-/* slightly bolder + tighter for headings on dark */
+.on-dark p, .on-dark li { color:#dbe4fb; }
 .on-dark h2 { font-weight:900; letter-spacing:.15px; }
 
-/* 2) Optional translucent panel for copy (use on the BA text column) */
 .glass-strong{
   background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
   border:1px solid rgba(255,255,255,.18);
@@ -394,46 +419,22 @@ section:last-of-type{ margin-bottom: 2rem }
   padding: 1rem 1.1rem;
 }
 
-/* 3) If the BA section sits on a very dark panel, lighten the bullets slightly */
-.on-dark .checks li::before { color: #7be3ff; }
-
-/* 4) Safety net: if a section contains the before/after slider, treat its left column as "on dark"
-   (uses :has, which is supported in modern browsers; harmless if not supported) */
+/* If a section contains the before/after slider, treat its left column as "on dark" */
 section:has(.ba-wrap) .ba-copy h2 { color:#eef3ff; text-shadow:0 2px 8px rgba(0,0,0,.45); }
 section:has(.ba-wrap) .ba-copy p,
 section:has(.ba-wrap) .ba-copy li { color:#dbe4fb; }
 
-/* Solid header once you scroll a bit */
-.site-header { transition: background-color .2s ease, box-shadow .2s ease, border-color .2s ease }
-.site-header.is-scrolled{
-  background: #ffffff;
-  border-bottom-color: #e2e8f0;    /* slate-200 */
-  box-shadow: 0 6px 16px rgba(2, 6, 23, .08);
-}
-
-/* Header link colors:
-   - default (translucent/dark header): keep your earlier nav.site a rules (light text)
-   - when scrolled OR light theme: switch to dark-on-light */
-.site-header.is-scrolled nav a,
-body.theme-light .site-header nav a { color:#0f172a }         /* slate-900 */
-.site-header.is-scrolled nav a:hover,
-body.theme-light .site-header nav a:hover { color:#1d4ed8 }   /* blue-700 */
-
-
 /* Anchor offset so sections aren’t hidden under the sticky header */
-[id]{ scroll-margin-top: 84px }   /* roughly header height */
+[id]{ scroll-margin-top: 84px }
 @media (max-width: 640px){ [id]{ scroll-margin-top: 72px } }
 
 /* ==== Bio layout (avatar + copy + snapshot) ==== */
-.bio{
-  display:grid;
-  gap:1rem;
-}
+.bio{ display:grid; gap:1rem; }
 
 /* Desktop: 2 columns (main + snapshot) */
 @media (min-width: 900px){
   .bio{
-    grid-template-columns: 1fr 360px;   /* left grows, right fixed */
+    grid-template-columns: 1fr 360px;
     align-items: stretch;
   }
 }
@@ -443,7 +444,7 @@ body.theme-light .site-header nav a:hover { color:#1d4ed8 }   /* blue-700 */
   display:grid;
   grid-template-columns: 140px 1fr;
   gap: 1.1rem 1.25rem;
-  align-items: center;                  /* vertically center text to headshot */
+  align-items: center;
   padding: 1rem 1.1rem;
   border:1px solid var(--edge);
   border-radius: var(--radius);
@@ -451,21 +452,19 @@ body.theme-light .site-header nav a:hover { color:#1d4ed8 }   /* blue-700 */
   box-shadow: var(--shadow);
 }
 
-/* Avatar */
-.profile-img{
+/* Avatar (bio card variant) */
+.bio .profile-img{
   width:140px; height:140px; border-radius:50%;
   overflow:hidden; flex:0 0 auto;
   box-shadow: var(--shadow);
   border:1px solid var(--edge);
 }
-.profile-img img{ width:100%; height:100%; object-fit:cover; display:block }
+.bio .profile-img img{ width:100%; height:100%; object-fit:cover; display:block }
 
-/* Text block */
-.bio-content{ min-width:0 }             /* prevent overflow/wrapping issues */
+.bio-content{ min-width:0 }
 .bio-content p{ margin:.35rem 0 .6rem }
 .bio .cta{ margin-top:.4rem }
 
-/* Snapshot card */
 .bio-card{
   padding: 1rem 1.1rem;
   border:1px solid var(--edge);
@@ -474,20 +473,83 @@ body.theme-light .site-header nav a:hover { color:#1d4ed8 }   /* blue-700 */
   box-shadow: var(--shadow);
 }
 
-/* Mobile stacking */
 @media (max-width: 899.98px){
-  .bio-flex{
-    grid-template-columns: 110px 1fr;
-    padding: .9rem 1rem;
-  }
-  .profile-img{ width:110px; height:110px }
+  .bio-flex{ grid-template-columns: 110px 1fr; padding: .9rem 1rem; }
+  .bio .profile-img{ width:110px; height:110px }
   .bio-card{ margin-top:.25rem }
 }
 
-/* Optional: make Snapshot list tighter + aligned */
 .bio-card .tight{ margin:.35rem 0 0; padding-left: 0 }
 .bio-card .tight li{ margin:.25rem 0 }
+/* Let hero section span full width, but keep content aligned */
+header.hero {
+  border-radius: 0;                 /* remove rounding so video fills cleanly */
+  margin-inline: 0;                 /* no side gutters */
+  width: 100%;                      /* full bleed background */
+}
 
-.site-header .wrap.container { /* your sizing rules */ }
+.hero-content,
+.hero-overlay {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: 2rem;             /* keep nice gutters on text */
+}
+/* ---- FINAL ALIGNMENT + FULL-BLEED HERO PATCH ---- */
 
+/* Header wrapper = same width as site */
+.page{
+  width:min(100%, calc(var(--maxw) + 4rem));
+  margin-inline:auto;
+  padding-inline:2rem;
+}
 
+/* Let the hero background/video span edge-to-edge */
+header.hero { 
+  width:100%;
+  margin-inline:0;
+  border-radius:0;
+  overflow:hidden;
+}
+
+/* In case this older rule exists anywhere, neutralize it */
+.hero.hero--video.container { width:100% !important; }
+
+/* Stack the text on top of the video and align to the site width */
+#heroVideo{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; z-index:-1;
+  filter: blur(1.5px) brightness(.55) saturate(1.08);
+}
+
+/* Make the hero text container use the SAME max width as the site */
+.hero-overlay{
+  position:relative; z-index:1;
+  max-width: var(--maxw);         /* match sections/cards */
+  margin-inline:auto;
+  padding-inline:2rem;            /* same side gutters */
+}
+/* Make hero text wrapper use the EXACT same width + gutters as site containers */
+.hero-overlay,
+.hero-content {
+  width: min(100%, calc(var(--maxw) + 4rem));
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+
+/* Optional: keep paragraphs from being narrower than the container in hero */
+header.hero .hero-overlay p {
+  max-width: none;   /* remove the 72ch limit here so the hero copy aligns perfectly */
+}
+/* --- Legal/reading pages: make cards narrower and centered --- */
+main.prose {
+  /* a comfortable reading width; tweak 940–1040px if you like */
+  width: min(100%, 980px);
+  margin-inline: auto;      /* center the column */
+  padding-inline: 2rem;     /* keep the same side gutters */
+}
+
+main.prose section {
+  /* let each card fill the prose column, not the full site container */
+  max-width: 100%;
+  margin-inline: auto;
+}

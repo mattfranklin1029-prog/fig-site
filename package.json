@@ -4,14 +4,16 @@
   "private": true,
   "type": "commonjs",
   "main": "server.js",
-  "scripts": {
-    "tw:build": "tailwindcss -i ./src/tailwind.css -o ./public/tw.css --minify",
-    "tw:watch": "tailwindcss -i ./src/tailwind.css -o ./public/tw.css --watch",
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "dev:all": "concurrently -n CSS,API -c magenta,cyan \"npm:tw:watch\" \"npm:dev\"",      
-    "prestart": "npm run tw:build"
-  },
+"scripts": {
+  "tw:build": "tailwindcss -i ./src/tailwind.css -o ./public/tw.css --minify",
+  "tw:watch": "tailwindcss -i ./src/tailwind.css -o ./public/tw.css --watch",
+  "dev": "nodemon server.js",
+  "dev:all": "concurrently -n CSS,API -c magenta,cyan \"npm:tw:watch\" \"npm:dev\"",
+
+  "postinstall": "npm run tw:build",
+  "start": "node server.js"
+},
+
   "engines": {
     "node": ">=18 <23"
   },
