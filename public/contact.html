@@ -110,16 +110,6 @@
     <p>© <span id="y"></span> Franklin Innovation Group</p>
   </footer>
 
-  <!-- Keep tiny inline helpers + load the external contact.js -->
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-    const msg = document.getElementById('msg');
-    const count = document.getElementById('msg-count');
-    if (msg && count){
-      const update = () => { count.textContent = msg.value.length; };
-      msg.addEventListener('input', update); update();
-    }
-  </script>
   <script src="/contact.js" defer></script>
 </body>
 </html>

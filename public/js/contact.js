@@ -1,35 +1,26 @@
 // public/contact.js
 (function () {
+  // --- small helpers moved from inline (Edge CSP-safe) ---
+  document.addEventListener('DOMContentLoaded', () => {
+    const y = document.getElementById('y');
+    if (y) y.textContent = new Date().getFullYear();
+
+    const msg = document.getElementById('msg');
+    const count = document.getElementById('msg-count');
+    if (msg && count) {
+      const update = () => { count.textContent = msg.value.length; };
+      msg.addEventListener('input', update);
+      update();
+    }
+  });
+
   const form = document.getElementById("contact-form");
   if (!form) return;
 
   const submitBtn = document.getElementById("contact-submit");
   const statusEl = document.getElementById("form-status");
 
-  // Simple client-side validation
-  function validate(fields) {
-    const errors = [];
-    const name = fields.get("name")?.trim();
-    const email = fields.get("email")?.trim();
-    const message = fields.get("message")?.trim();
-
-    if (!name || name.length < 2) errors.push("Please enter your name.");
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      errors.push("Please enter a valid email.");
-    if (!message || message.length < 1)
-      errors.push("Please enter a message.");
-
-    return errors;
-  }
-
-  // Small helpers
-  const setBusy = (busy) => {
-    if (submitBtn) submitBtn.disabled = busy;
-    if (busy) {
-      setStatus("Sending…");
-    }
-  };
-
+  // Status helpers
   const setStatus = (msg, isError = false) => {
     if (!statusEl) return;
     statusEl.textContent = msg;
@@ -37,7 +28,32 @@
     statusEl.classList.toggle("text-green-600", !isError);
   };
 
-  async function postWithTimeout(url, body, timeoutMs = 10000) {
+  const setBusy = (busy) => {
+    if (submitBtn) submitBtn.disabled = busy;
+    if (busy) setStatus("Sending…");
+  };
+
+  // Client-side validation (slightly stricter)
+  function validate(fields) {
+    const errors = [];
+    const name = fields.get("name")?.toString().trim();
+    const email = fields.get("email")?.toString().trim();
+    const message = fields.get("message")?.toString().trim();
+    const subject = fields.get("subject")?.toString().trim();
+    const phone = fields.get("phone")?.toString().trim();
+
+    if (!name || name.length < 2) errors.push("Please enter your name.");
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      errors.push("Please enter a valid email.");
+    if (!subject) errors.push("Please choose a subject.");
+    if (!message || message.length < 1) errors.push("Please enter a message.");
+    if (phone && !/^[0-9\-\+\(\)\s\.]{7,20}$/.test(phone))
+      errors.push("Please enter a valid phone (digits and ()-+ . only).");
+
+    return errors;
+  }
+
+  async function postWithTimeout(url, body, timeoutMs = 15000) {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
@@ -78,23 +94,18 @@
       const body = new URLSearchParams(formData).toString();
       const res = await postWithTimeout(form.action || "/api/contact", body, 15000);
 
-      // If backend responds with a redirect (e.g., 303) the browser won't auto-follow on fetch.
-      // Your server returns a 303 when _redirect is present; emulate it:
+      // Your server 303-redirects when _redirect is present; emulate it in fetch world
       const redirectTo = formData.get("_redirect");
-
       if (res.ok) {
-        // If you want to follow server-provided Location header instead:
         const loc = res.headers.get("Location");
         if (redirectTo && (res.status === 303 || loc)) {
           window.location.href = loc || redirectTo;
           return;
         }
-        // Otherwise show a friendly message
         const text = await res.text().catch(() => "");
         setStatus(text || "✅ Thanks! We’ll be in touch soon.");
         form.reset();
       } else if (res.status === 204) {
-        // Honeypot path (shouldn’t happen here, but keep for parity)
         setStatus("Thanks!");
         form.reset();
       } else {
