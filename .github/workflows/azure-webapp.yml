@@ -15,16 +15,33 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npm install
+      # Clean install of dependencies
+      - run: npm ci
+
+      # Build Tailwind (if you use npm run tw:build instead, change this)
       - run: npm run build --if-present
-      - run: npm prune --production
 
+      # Install only production dependencies for deployment
+      - run: |
+          rm -rf node_modules
+          npm ci --omit=dev
+
+      # Zip only what’s needed for Azure
       - name: Zip artifact for deployment
-        run: zip -r release.zip * -x ".git*"
+        run: |
+          zip -r release.zip . \
+            -x "*.git*" \
+               "*.github*" \
+               "tests/*" \
+               "docs/*" \
+               "**/*.log" \
+               "**/*.md" \
+               "node_modules/.cache/*"
 
+      # Deploy to Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: fig-web
+          app-name: fig-web                 # your app name in Azure
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: release.zip
