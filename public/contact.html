@@ -12,7 +12,6 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
   <style>
-    /* small page-specific polish (keeps your existing tokens) */
     .hp-field{position:absolute;left:-10000px;opacity:0}
     .contact-wrap{display:grid;gap:1rem}
     @media (min-width: 900px){ .contact-wrap{grid-template-columns: 2fr 1fr;} }
@@ -50,7 +49,7 @@
 
   <main class="container contact-wrap">
     <!-- Form -->
-    <form class="form-grid" method="POST" action="/api/contact" accept-charset="UTF-8" id="contact-form">
+    <form class="form-grid" method="POST" action="/api/contact" accept-charset="UTF-8" id="contact-form" novalidate>
       <!-- honeypot -->
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp-field" aria-hidden="true">
 
@@ -82,7 +81,7 @@
         We’ll only use your info to respond to this inquiry. See our <a href="/privacy.html">privacy policy</a>.
       </div>
 
-      <button class="cta" type="submit" id="submit-btn">Send message</button>
+      <button class="cta" type="submit" id="contact-submit">Send message</button>
       <div class="status" id="form-status" aria-live="polite"></div>
     </form>
 
@@ -111,29 +110,16 @@
     <p>© <span id="y"></span> Franklin Innovation Group</p>
   </footer>
 
+  <!-- Keep tiny inline helpers + load the external contact.js -->
   <script>
-    // Year
     document.getElementById('y').textContent = new Date().getFullYear();
-
-    // Message character counter
     const msg = document.getElementById('msg');
     const count = document.getElementById('msg-count');
-    if (msg && count){ 
+    if (msg && count){
       const update = () => { count.textContent = msg.value.length; };
       msg.addEventListener('input', update); update();
     }
-
-    // Light UX feedback on submit
-    const form = document.getElementById('contact-form');
-    const statusEl = document.getElementById('form-status');
-    const btn = document.getElementById('submit-btn');
-
-    if (form){
-      form.addEventListener('submit', () => {
-        if (btn){ btn.disabled = true; btn.textContent = 'Sending…'; }
-        if (statusEl){ statusEl.textContent = 'Sending your message…'; }
-      }, { passive:true });
-    }
   </script>
+  <script src="/contact.js" defer></script>
 </body>
 </html>

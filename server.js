@@ -1,16 +1,48 @@
-// server.js — Express + Microsoft Graph (v3) contact form
+// server.js — Express + Microsoft Graph (v3) + Slack webhook
 require('dotenv').config();
 
 const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
-// IMPORTANT for v7:
+// IMPORTANT for express-rate-limit v7:
 const { rateLimit } = require('express-rate-limit');
 const morgan = require('morgan');
 require('isomorphic-fetch'); // fetch for Node
 
-// Graph v3
+// --- Slack notify (Incoming Webhook) ---
+async function sendSlackNotification({ name, email, phone, subject, message, ip, ua }) {
+  const url = (process.env.SLACK_WEBHOOK_URL || '').trim();
+  if (!url) return; // silently skip if not configured
+
+  const blocks = [
+    { type: "header", text: { type: "plain_text", text: "📬 New FIG Contact", emoji: true } },
+    {
+      type: "section",
+      fields: [
+        { type: "mrkdwn", text: `*Name:*\n${name || "—"}` },
+        { type: "mrkdwn", text: `*Email:*\n${email || "—"}` },
+        { type: "mrkdwn", text: `*Phone:*\n${phone || "—"}` },
+        { type: "mrkdwn", text: `*Subject:*\n${subject || "—"}` },
+      ],
+    },
+    { type: "section", text: { type: "mrkdwn", text: `*Message:*\n${message || "—"}` } },
+    { type: "context", elements: [{ type: "mrkdwn", text: `IP: ${ip || "—"}  |  UA: ${ua || "—"}` }] },
+  ];
+
+  const resp = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: `New contact from ${name || "Unknown"}`, blocks })
+  });
+
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => "");
+    console.error("Slack webhook error:", resp.status, body);
+  }
+}
+
+// --- Graph v3
 const { Client } = require('@microsoft/microsoft-graph-client');
 const { ClientSecretCredential } = require('@azure/identity');
 const { TokenCredentialAuthenticationProvider } =
@@ -34,13 +66,11 @@ app.use(helmet({
     useDefaults: true,
     directives: {
       "default-src": ["'self'"],
-      // ✅ Allow Tailwind CDN so pages using the CDN script can style correctly
+      // Allow Tailwind CDN if used anywhere
       "script-src": ["'self'", "https://cdn.tailwindcss.com"],
       "script-src-elem": ["'self'", "https://cdn.tailwindcss.com"],
-      // Styles (you already inline some + Tailwind injects styles at runtime)
       "style-src": ["'self'", "'unsafe-inline'"],
       "style-src-elem": ["'self'", "'unsafe-inline'"],
-      // Images (local + data URLs + remote like Unsplash)
       "img-src": ["'self'", "data:", "https:"],
       "font-src": ["'self'", "data:"],
       "form-action": ["'self'"],
@@ -94,7 +124,7 @@ if (hasGraphConfig) {
   });
   graph = Client.initWithMiddleware({ authProvider });
 } else {
-  console.warn('Microsoft Graph not configured; missing one of:', requiredGraphKeys.filter(k => !process.env[k]).join(', '));
+  console.warn('Microsoft Graph not configured; missing:', requiredGraphKeys.filter(k => !process.env[k]).join(', '));
 }
 
 async function sendGraphMail({ subject, html, replyTo }) {
@@ -124,7 +154,6 @@ const contactLimiter = rateLimit({
 });
 
 // --- Contact endpoint ---
-// --- Contact endpoint (drop-in replacement) ---
 app.post(
   '/api/contact',
   contactLimiter,
@@ -135,31 +164,26 @@ app.post(
     body('_gotcha').optional().isLength({ max: 0 }).withMessage('honeypot')
   ],
   async (req, res) => {
-    // Helpful server-side logging so we can see what arrived
     try {
-      // Log minimal request context (no PII beyond field presence/lengths)
       const b = req.body || {};
-      console.log('CONTACT SUBMIT',
-        {
-          hasBody: !!req.body,
-          nameLen: (b.name || '').length,
-          emailPresent: !!b.email,
-          msgLen: (b.message || '').length,
-          redirect: !!b._redirect
-        }
-      );
+      console.log('CONTACT SUBMIT', {
+        hasBody: !!req.body,
+        nameLen: (b.name || '').length,
+        emailPresent: !!b.email,
+        msgLen: (b.message || '').length,
+        redirect: !!b._redirect
+      });
 
-      // Validator errors → log which fields failed
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         console.error('Validation errors:', errors.array().map(e => e.msg || e.param));
-        // If it's a form post (has _redirect), send a simple HTML error
         if (b._redirect) return res.status(400).send('Invalid submission.');
         return res.status(400).json({ ok: false, error: 'Invalid submission.' });
       }
 
       const name = (b.name || '').trim();
       const email = (b.email || '').trim();
+      const phone = (b.phone || '').trim();
       const message = (b.message || '').trim();
       const redirectTo = b._redirect || '/thank-you.html';
 
@@ -174,28 +198,55 @@ app.post(
           <hr><p style="color:#6b7280">Sent from franklininnovationgroup.com</p>
         </div>`;
 
+      // 1) Primary delivery via Graph
       await sendGraphMail({ subject, html, replyTo: email });
 
-      // If it came from your HTML form, do the thank-you redirect
-      if (redirectTo) return res.redirect(303, redirectTo);
+      // 2) Slack ping (non-blocking to user, but we await to log errors here)
+      await sendSlackNotification({
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        ip: req.ip,
+        ua: req.get('user-agent')
+      });
 
-      // Fallback JSON success (for programmatic callers)
+      // 3) Respond
+      if (redirectTo) return res.redirect(303, redirectTo);
       return res.json({ ok: true, message: 'Thanks! Your message has been sent.' });
+
     } catch (err) {
-      // Log rich error details; keep response generic
       console.error('CONTACT SEND FAIL', {
         status: err?.status || err?.statusCode,
         code: err?.code,
         message: err?.message,
         graphBody: err?.response?.data || err?.body
       });
-      // For form posts, return simple text to keep UX clean
       if (req.body?._redirect) return res.status(502).send('Unable to send message right now.');
       return res.status(502).json({ ok: false, error: 'Unable to send message right now.' });
     }
   }
 );
 
+// --- Simple Slack test route ---
+app.get('/_test/slack', async (req, res) => {
+  try {
+    await sendSlackNotification({
+      name: 'Test',
+      email: 'test@example.com',
+      phone: '',
+      subject: 'Slack test',
+      message: 'Hello from FIG server ✅',
+      ip: req.ip,
+      ua: req.get('user-agent')
+    });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('Slack test failed:', e);
+    res.status(500).json({ ok: false });
+  }
+});
 
 // --- 404 ---
 app.use((req, res) => {
@@ -210,6 +261,13 @@ app.use((err, req, res, _next) => {
   console.error(err);
   const status = err.status || 500;
   res.status(status).json({ ok: false, error: NODE_ENV === 'production' ? 'Server error' : String(err) });
+});
+
+// --- Startup env sanity ---
+console.log('ENV CHECK', {
+  slackSet: !!(process.env.SLACK_WEBHOOK_URL || '').trim(),
+  port: PORT,
+  hasEnvFile: require('fs').existsSync(path.join(__dirname, '.env'))
 });
 
 // Bind to 0.0.0.0 for Azure Linux containers
