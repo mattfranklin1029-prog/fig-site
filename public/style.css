@@ -310,6 +310,9 @@ nav[aria-label="Breadcrumb"] li{ display:flex; align-items:center; gap:.4rem }
 .bio .tight{ margin:.35rem 0 0; padding-left:0 }
 .bio .tight li{ margin:.25rem 0 }
 
+
+
+
 /* ---------- Contact page polish ---------- */
 .contact-wrap{
   border-radius:22px; padding:1.25rem;
