@@ -98,9 +98,10 @@ jobs:
           steps.deploy1.outcome == 'success' || 
           steps.deploy2.outcome == 'success' || 
           steps.deploy3.outcome == 'success'
+
         run: |
-          curl -fsS https://${{ env.WEBAPP_NAME }}-hpepdpd7h9evgnfg.westus3-01.azurewebsites.net/health || \
-          curl -fsS https://${{ env.WEBAPP_NAME }}.azurewebsites.net/healthz
+          curl -fsS https://fig-web-hpepdpd7h9evgnfg.westus3-01.azurewebsites.net/_health || \
+          curl -fsS https://fig-web-hpepdpd7h9evgnfg.westus3-01.azurewebsites.net/healthz
 
       # Fail if all retries failed
       - name: Fail if deploy still failing
