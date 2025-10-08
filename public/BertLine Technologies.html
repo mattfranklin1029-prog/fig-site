@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bertline Labs — Plug-Load Energy Control (Live Demo)</title>
+  <meta name="description" content="Live demo of BERT-style plug-load and temperature insights with real-time motion.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tw.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+</head>
+<body class="bg-slate-950 text-slate-100" data-bertline>
+  <!-- Header -->
+  <header class="relative isolate overflow-hidden">
+    <div class="absolute inset-0 -z-10 from-indigo-600 via-blue-600 to-indigo-700 bg-gradient-to-br opacity-30 blur-3xl"></div>
+    <div class="max-w-7xl mx-auto px-6 py-6">
+      <div class="flex items-center justify-between">
+        <a href="/index.html" class="flex items-center gap-3">
+          <img src="/img/FIG-Logo.png" class="h-8 w-auto" alt="FIG logo" />
+          <span class="text-xl font-semibold tracking-wide">Franklin Innovation Group</span>
+        </a>
+        <nav class="hidden md:flex gap-6 text-sm text-slate-300">
+          <a href="/portfolio.html" class="hover:text-white">Portfolio</a>
+          <a href="/contact.html" class="hover:text-white">Contact</a>
+        </nav>
+      </div>
+
+      <div class="mt-8 text-center">
+        <span class="inline-flex items-center rounded-full bg-white/10 ring-1 ring-white/15 px-3 py-1 text-xs text-slate-200">Live</span>
+        <h1 class="mt-3 text-4xl md:text-6xl font-bold leading-tight">Bertline Labs — Plug-Load Energy Control</h1>
+        <p class="mt-4 text-slate-300 max-w-2xl mx-auto">
+          Real-time plug/hardwired load insight, temperature-based control, and scheduling—visualized with motion.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    <!-- KPI cards -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
+        <div class="text-xs uppercase tracking-wide text-slate-400">Overnight Load Reduction</div>
+        <div class="text-3xl font-semibold" id="kpi-overnight">—</div>
+        <div class="text-[11px] text-emerald-400">Air-cleaner example</div>
+      </div>
+      <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
+        <div class="text-xs uppercase tracking-wide text-slate-400">Typical Payback</div>
+        <div class="text-3xl font-semibold" id="kpi-payback">—</div>
+        <div class="text-[11px] text-emerald-400">High-usage scenarios</div>
+      </div>
+      <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
+        <div class="text-xs uppercase tracking-wide text-slate-400">Local Data Log</div>
+        <div class="text-3xl font-semibold" id="kpi-log">—</div>
+        <div class="text-[11px] text-slate-400">Offline redundancy</div>
+      </div>
+      <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
+        <div class="text-xs uppercase tracking-wide text-slate-400">Scale (per server)</div>
+        <div class="text-3xl font-semibold" id="kpi-scale">—</div>
+        <div class="text-[11px] text-slate-400">Devices supported</div>
+      </div>
+    </section>
+
+    <!-- Charts grid -->
+    <section class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-semibold">Weekday kWh — Baseline vs Post-BERT</h3>
+          <span class="text-xs text-slate-400">Illustrative per-device</span>
+        </div>
+        <div id="baseline-chart" style="height:340px;"></div>
+      </div>
+
+      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-semibold">Overnight vs Daytime Load</h3>
+          <span class="text-xs text-slate-400">Non-operational hours visibility</span>
+        </div>
+        <div id="overnight-chart" style="height:340px;"></div>
+      </div>
+
+      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-semibold">Air-Cleaner Annual Cost — Before/After</h3>
+          <span class="text-xs text-slate-400">@ $0.16/kWh, 60h/wk</span>
+        </div>
+        <div id="aircleaner-chart" style="height:340px;"></div>
+      </div>
+
+      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-semibold">Temperature Set-Points (AC)</h3>
+          <span class="text-xs text-slate-400">On 79°F • Off 73°F</span>
+        </div>
+        <div id="temp-chart" style="height:340px;"></div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="mt-10">
+      <div class="rounded-2xl bg-gradient-to-br from-indigo-600/20 via-blue-600/10 to-indigo-700/20 ring-1 ring-white/10 p-6">
+        <h3 class="text-xl font-semibold">Want this for your org?</h3>
+        <p class="mt-1 text-slate-300">We can integrate BERT-style insights with your BAS or run standalone.</p>
+        <a href="/contact.html" class="mt-4 inline-block rounded-xl bg-indigo-500 hover:bg-indigo-600 px-5 py-3">Start a quick assessment</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="max-w-7xl mx-auto px-6 py-10 text-sm text-slate-400">© <span id="y"></span> Franklin Innovation Group</footer>
+  <!-- Only one script: helpers. It will lazy-load /js/bertline.js automatically. -->
+  <script src="/js/helpers.js"></script>
+</body>
+</html>
