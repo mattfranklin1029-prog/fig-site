@@ -2,6 +2,7 @@
 require('dotenv').config();
 
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
@@ -49,6 +50,9 @@ const { TokenCredentialAuthenticationProvider } =
   require('@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials');
 const { body, validationResult } = require('express-validator');
 
+// --- Import the SSE route (CommonJS)
+const bertlineStream = require('./routes/bertline-stream.js');
+
 const app = express();
 
 // --- Runtime ---
@@ -60,21 +64,21 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // --- Security headers ---
+// NOTE: allow jsDelivr for AG Charts, and keep connect-src 'self' for SSE
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
   contentSecurityPolicy: {
     useDefaults: true,
     directives: {
       "default-src": ["'self'"],
-      // Allow Tailwind CDN if used anywhere
-      "script-src": ["'self'", "https://cdn.tailwindcss.com"],
-      "script-src-elem": ["'self'", "https://cdn.tailwindcss.com"],
+      "script-src": ["'self'", "https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net"],
+      "script-src-elem": ["'self'", "https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net"],
       "style-src": ["'self'", "'unsafe-inline'"],
       "style-src-elem": ["'self'", "'unsafe-inline'"],
       "img-src": ["'self'", "data:", "https:"],
       "font-src": ["'self'", "data:"],
       "form-action": ["'self'"],
-      "connect-src": ["'self'"],
+      "connect-src": ["'self'"], // SSE is same-origin: /api/bertline/stream
       "upgrade-insecure-requests": []
     }
   },
@@ -82,7 +86,13 @@ app.use(helmet({
 }));
 
 // --- Compression + parsers ---
-app.use(compression());
+// Skip compression for SSE to avoid buffering the stream.
+app.use(compression({
+  filter: (req, res) => {
+    if (req.path === '/api/bertline/stream') return false;
+    return compression.filter(req, res);
+  }
+}));
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 
@@ -201,7 +211,7 @@ app.post(
       // 1) Primary delivery via Graph
       await sendGraphMail({ subject, html, replyTo: email });
 
-      // 2) Slack ping (non-blocking to user, but we await to log errors here)
+      // 2) Slack ping
       await sendSlackNotification({
         name,
         email,
@@ -248,6 +258,9 @@ app.get('/_test/slack', async (req, res) => {
   }
 });
 
+// --- Mount the SSE route (AFTER compression filter is set up, BEFORE 404) ---
+app.use(bertlineStream);
+
 // --- 404 ---
 app.use((req, res) => {
   res.status(404);
@@ -267,7 +280,7 @@ app.use((err, req, res, _next) => {
 console.log('ENV CHECK', {
   slackSet: !!(process.env.SLACK_WEBHOOK_URL || '').trim(),
   port: PORT,
-  hasEnvFile: require('fs').existsSync(path.join(__dirname, '.env'))
+  hasEnvFile: fs.existsSync(path.join(__dirname, '.env'))
 });
 
 // Bind to 0.0.0.0 for Azure Linux containers
