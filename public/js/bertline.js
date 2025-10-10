@@ -1,15 +1,43 @@
 // /public/js/bertline.js
 // Live AG Charts wired to /api/bertline/it-health + /api/bertline/stream (SSE)
+// Adds: compare toggle, KPI sparklines, ROI widget, safer formatting/theme.
 
 (function () {
   if (window.__bertInit) return; window.__bertInit = true;
 
+  // ---------- Formatters & Theme ----------
+  const fmt = {
+    kwh:    new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }),
+    money0: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }),
+    money2: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }),
+    pct0:   new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 0 }),
+    pct1:   new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 1 }),
+  };
+
+  const THEME = {
+    axesCommon: {
+      label: { color: '#CBD5E1', fontSize: 11 },
+      gridStyle: [{ stroke: 'rgba(255,255,255,0.06)' }],
+    },
+    colors: {
+      primary: '#5B7CFF',
+      savings: '#10B981',
+      gray:    '#94A3B8',
+      warning: '#F59E0B',
+    }
+  };
+
+  // ---------- UI state ----------
+  let compareMode = 'both';    // 'baseline' | 'post' | 'both'
+  let liveEnabled = true;
+  let pricePerKwh = 0.16;
+  let lastAirBaseRows = null;
+
+  // ---------- Bootstrap ----------
   (async function init() {
     // Ensure AG Charts UMD
     if (!(window.agCharts && window.agCharts.AgCharts)) {
-      try {
-        await loadScript('https://cdn.jsdelivr.net/npm/ag-charts-community/dist/umd/ag-charts-community.min.js');
-      } catch {}
+      try { await loadScript('https://cdn.jsdelivr.net/npm/ag-charts-community/dist/umd/ag-charts-community.min.js'); } catch {}
     }
     if (!(window.agCharts && window.agCharts.AgCharts)) {
       console.warn('AG Charts failed to load');
@@ -17,137 +45,316 @@
     }
     const A = agCharts.AgCharts;
 
-    // Initial data (API → demo)
+    // Footer year
+    const y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
+
+    // Seed data
     const initial = normalize(await fetchOrDemo('/api/bertline/it-health'));
-    const charts  = createCharts(A, initial);
+
+    // Charts + KPIs
+    const charts = createCharts(A, initial);
     applyKpis(initial);
+    seedSparklines(A);
+    updateCompareVisibility(charts);
+    updateWeekdayDeltaBadge(charts, initial);
 
     // Live badge
     const live = makeLiveBadge();
 
+    // Controls
+    wireCompare(charts);
+    wireLiveToggle();
+    wireRoi(charts);        // robust ROI; runs immediately
+
     // SSE updates
     connectSSE(({ state }) => {
+      if (!liveEnabled) return;
       const s = normalize(state);
       applyKpisFromState(s);
       smoothReplace(charts, s);
+      updateCompareVisibility(charts);
+      updateWeekdayDeltaBadge(charts, s);
+      recalcAirWithPrice(charts); // keep air chart scaled to slider
       pulse();
       live.ok();
     }, live.err);
 
-    // Expose for debugging
+    // Expose for debug
     window.__bertCharts = charts;
   })();
 
-  /* -------------------- Chart creation -------------------- */
+  // ---------- Charts ----------
   function createCharts(A, data) {
     const charts = {};
-    const anim = { enabled: true, duration: 700 };
+    const anim = { enabled: true, duration: 600 };
 
-    // Baseline vs Post-BERT (line + area)
+    // Weekday Baseline vs Post-BERT
     const baselineEl = document.getElementById('baseline-chart');
     if (baselineEl) {
       charts.baseline = A.create({
         container: baselineEl,
         data: data.baselineWeek,
         animation: anim,
-        series: [
-          { type: 'line', xKey: 'day', yKey: 'baseline', yName: 'Baseline', marker: { enabled: true } },
-          { type: 'area', xKey: 'day', yKey: 'post',     yName: 'Post-BERT' }
-        ],
+        background: { visible: false },
         axes: [
-          { type: 'category', position: 'bottom' },
-          { type: 'number', position: 'left', title: { text: 'kWh (per day)' } },
+          { type: 'category', position: 'bottom', ...THEME.axesCommon },
+          { type: 'number', position: 'left', ...THEME.axesCommon,
+            title: { text: 'kWh (per day)' },
+            label: { formatter: ({ value }) => fmt.kwh.format(value) + ' kWh', color: '#CBD5E1', fontSize: 11 } }
         ],
-        legend: { position: 'bottom' },
+        series: [
+          { type: 'line', xKey: 'day', yKey: 'baseline', yName: 'Baseline',
+            stroke: THEME.colors.gray, strokeWidth: 2, marker: { size: 3, fill: THEME.colors.gray } },
+          { type: 'line', xKey: 'day', yKey: 'post', yName: 'Post-BERT',
+            stroke: THEME.colors.savings, strokeWidth: 3, marker: { size: 0 } },
+        ],
+        legend: { position: 'bottom', item: { label: { color: '#E2E8F0' } } }
       });
     }
 
-    // Load split (stacked bars)
+    // Overnight vs Daytime (stacked)
     const overnightEl = document.getElementById('overnight-chart');
     if (overnightEl) {
       charts.overnight = A.create({
         container: overnightEl,
         data: data.loadSplit,
         animation: anim,
-        series: [
-          { type: 'bar', xKey: 'label', yKey: 'overnight', yName: 'Overnight', stacked: true },
-          { type: 'bar', xKey: 'label', yKey: 'daytime',   yName: 'Daytime',   stacked: true },
-        ],
+        background: { visible: false },
         axes: [
-          { type: 'category', position: 'bottom' },
-          { type: 'number', position: 'left', title: { text: 'Share of total (%)' } },
+          { type: 'category', position: 'bottom', ...THEME.axesCommon },
+          { type: 'number', position: 'left', ...THEME.axesCommon,
+            title: { text: 'Share of total (%)' },
+            label: { formatter: ({ value }) => value + '%', color: '#CBD5E1', fontSize: 11 } }
         ],
-        legend: { position: 'bottom' },
+        series: [
+          { type: 'bar', xKey: 'label', yKey: 'overnight', yName: 'Overnight', stacked: true,
+            fills: [THEME.colors.gray], strokes:[THEME.colors.gray], cornerRadius: 6 },
+          { type: 'bar', xKey: 'label', yKey: 'daytime', yName: 'Daytime', stacked: true,
+            fills: [THEME.colors.primary], strokes:[THEME.colors.primary], cornerRadius: 6 },
+        ],
+        legend: { position: 'bottom', item: { label: { color: '#E2E8F0' } } }
       });
     }
 
-    // Air-cleaner costs (grouped bars)
+    // Air-cleaner (grouped bars) — rescaled by ROI slider
     const airEl = document.getElementById('aircleaner-chart');
     if (airEl) {
-      charts.air = A.create({
-        container: airEl,
-        data: data.airCleanerCosts,
-        animation: anim,
-        series: [
-          { type: 'bar', xKey: 'cfm', yKey: 'before', yName: 'Before' },
-          { type: 'bar', xKey: 'cfm', yKey: 'after',  yName: 'After (60h/wk)' },
-        ],
-        axes: [
-          { type: 'category', position: 'bottom', title: { text: 'Unit size (CFM)' } },
-          { type: 'number', position: 'left', title: { text: 'Annual $' } },
-        ],
-        legend: { position: 'bottom' },
-      });
+      lastAirBaseRows = (data.airCleanerCosts || []).map(r => ({ cfm: r.cfm, before: r.before, after: r.after }));
+      charts.air = buildAirChart(A, lastAirBaseRows);
     }
 
-    // Temperature time series (time axis + fixed y domain for visibility)
+    // Temperature with set-point guides
     const tempEl = document.getElementById('temp-chart');
     if (tempEl) {
       charts.temp = A.create({
         container: tempEl,
         data: data.tempSeries,
         animation: anim,
+        background: { visible: false },
         series: [
-          { type: 'line', xKey: 'ts', yKey: 'temp', yName: 'Room Temp (°F)', marker: { enabled: true } },
-          { type: 'line', xKey: 'ts', yKey: 'on',   yName: 'ON set-point',   marker: { enabled: false } },
-          { type: 'line', xKey: 'ts', yKey: 'off',  yName: 'OFF set-point',  marker: { enabled: false } },
+          { type: 'line', xKey: 'ts', yKey: 'temp', yName: 'Room Temp (°F)',
+            stroke: THEME.colors.primary, strokeWidth: 2, marker: { size: 2 } },
+          { type: 'line', xKey: 'ts', yKey: 'on',   yName: 'ON set-point',
+            stroke: THEME.colors.gray, strokeWidth: 1.5, lineDash:[6,6], marker:{ enabled:false } },
+          { type: 'line', xKey: 'ts', yKey: 'off',  yName: 'OFF set-point',
+            stroke: THEME.colors.gray, strokeWidth: 1.5, lineDash:[6,6], marker:{ enabled:false } },
         ],
         axes: [
-          { type: 'time', position: 'bottom', label: { format: '%I:%M:%S %p' } },
-          { type: 'number', position: 'left', title: { text: '°F' }, min: 69, max: 81 },
+          { type: 'time', position: 'bottom', ...THEME.axesCommon,
+            label: { format: '%I:%M:%S %p', color: '#CBD5E1', fontSize: 11 } },
+          { type: 'number', position: 'left', ...THEME.axesCommon,
+            title: { text: '°F' }, min: 69, max: 81,
+            label: { formatter: ({ value }) => `${Math.round(value)}°F`, color: '#CBD5E1', fontSize: 11 } },
         ],
-        legend: { position: 'bottom' },
-        tooltip: {
-          renderer: ({ datum }) => ({
-            title: new Date(datum.ts).toLocaleTimeString(),
-            content: `Temp: ${datum.temp}°F`,
-          }),
-        },
+        legend: { position: 'bottom', item: { label: { color: '#E2E8F0' } } }
       });
     }
 
     return charts;
   }
 
-  /* -------------------- Live data → repaint -------------------- */
-  function smoothReplace(charts, s) {
-    if (charts.baseline && s.baselineWeek)   charts.baseline.data   = s.baselineWeek.map(d => ({ ...d }));
-    if (charts.overnight && s.loadSplit)     charts.overnight.data  = s.loadSplit.map(d => ({ ...d }));
-    if (charts.air && s.airCleanerCosts)     charts.air.data        = s.airCleanerCosts.map(d => ({ ...d }));
-    if (charts.temp && s.tempSeries)         charts.temp.data       = s.tempSeries.map(d => ({ ...d }));
+  function buildAirChart(A, rows) {
+    return A.create({
+      container: document.getElementById('aircleaner-chart'),
+      data: rows,
+      animation: { enabled: true, duration: 500 },
+      background: { visible: false },
+      axes: [
+        { type: 'category', position: 'bottom', ...THEME.axesCommon, title: { text: 'Unit size (CFM)' } },
+        { type: 'number',   position: 'left',   ...THEME.axesCommon, title: { text: 'Annual $' },
+          label: { formatter: ({ value }) => fmt.money0.format(value), color: '#CBD5E1', fontSize: 11 } }
+      ],
+      series: [
+        { type: 'bar', xKey: 'cfm', yKey: 'before', yName: 'Before',
+          fills: [THEME.colors.gray], strokes:[THEME.colors.gray], cornerRadius: 6 },
+        { type: 'bar', xKey: 'cfm', yKey: 'after',  yName: 'After (60h/wk)',
+          fills: [THEME.colors.savings], strokes:[THEME.colors.savings], cornerRadius: 6 },
+      ],
+      legend: { position: 'bottom', item: { label: { color: '#E2E8F0' } } }
+    });
   }
 
-  /* -------------------- KPIs -------------------- */
+  // ---------- Live data → repaint ----------
+  function smoothReplace(charts, s) {
+    if (charts.baseline && s.baselineWeek) charts.baseline.data = s.baselineWeek.map(d => ({ ...d }));
+    if (charts.overnight && s.loadSplit)   charts.overnight.data = s.loadSplit.map(d => ({ ...d }));
+    if (charts.air && s.airCleanerCosts) {
+      lastAirBaseRows = s.airCleanerCosts.map(r => ({ cfm: r.cfm, before: r.before, after: r.after }));
+      charts.air.data = scaleAirRows(lastAirBaseRows, pricePerKwh);
+    }
+    if (charts.temp && s.tempSeries) charts.temp.data = s.tempSeries.map(d => ({ ...d }));
+  }
+
+  // ---------- KPIs ----------
   function applyKpis(seed) {
     const k = seed.kpi || { overnightReductionPct: 64, payback: '< 4 mo', localLogDays: 14, deviceScale: 1000 };
-    set('#kpi-overnight', `${k.overnightReductionPct}%`);
-    set('#kpi-payback',   k.payback);
-    set('#kpi-log',       `${k.localLogDays} days`);
-    set('#kpi-scale',     `${k.deviceScale}`);
+    setText('#kpi-overnight', `${k.overnightReductionPct}%`);
+    setText('#kpi-payback',   k.payback);
+    setText('#kpi-log',       `${k.localLogDays} days`);
+    setText('#kpi-scale',     `${k.deviceScale}`);
   }
   function applyKpisFromState(state) { if (state?.kpi) applyKpis(state); }
 
-  /* -------------------- SSE client -------------------- */
+  // KPI sparklines (tiny lines; no axes)
+  function seedSparklines(A) {
+    const cfgs = [
+      ['#kpi-overnight-spark', [64, 65, 66, 67, 66, 68, 70]],
+      ['#kpi-payback-spark',   [6, 5, 5, 4, 4, 4, 3.8]],
+      ['#kpi-log-spark',       [10, 12, 12, 13, 13, 14, 14]],
+      ['#kpi-scale-spark',     [800, 850, 900, 950, 1000, 1050, 1100]],
+    ];
+    cfgs.forEach(([sel, arr]) => {
+      const el = qs(sel); if (!el) return;
+      A.create({
+        container: el, axes: [], legend: { enabled: false }, background: { visible: false },
+        series: [{ type: 'line', data: arr.map((y,i)=>({x:i,y})),
+          xKey:'x', yKey:'y', stroke: THEME.colors.savings, strokeWidth: 2, marker: { size: 0 } }],
+        height: el.clientHeight || 40, padding: { top: 0, right: 0, bottom: 0, left: 0 }
+      });
+    });
+  }
+
+  // ---------- Compare toggle ----------
+  function wireCompare(charts) {
+    const buttons = [
+      ['#btn-compare-baseline', 'baseline'],
+      ['#btn-compare-post',     'post'],
+      ['#btn-compare-both',     'both']
+    ];
+    buttons.forEach(([sel, mode]) => {
+      const el = qs(sel); if (!el) return;
+      el.addEventListener('click', () => {
+        compareMode = mode;
+        buttons.forEach(([s2, m2]) => { const b = qs(s2); if (b) b.dataset.active = (m2 === mode); });
+        updateCompareVisibility(charts);
+      });
+    });
+  }
+
+function updateCompareVisibility(charts) {
+  if (!charts || !charts.baseline || !charts.baseline.series) return; // ✅ safety guard
+
+  const base = charts.baseline;
+  base.series.forEach(s => {
+    if (s.yName === 'Baseline')  s.visible = (compareMode !== 'post');
+    if (s.yName === 'Post-BERT') s.visible = (compareMode !== 'baseline');
+  });
+
+  const badge = qs('#baseline-badge');
+  const data = base.data || [];
+  if (badge && data.length) {
+    const sum = (k) => data.reduce((a,b)=>a + (Number(b[k])||0), 0);
+    const b = sum('baseline'), p = sum('post');
+    const delta = b ? (p - b) / b : 0;
+    badge.textContent = (delta < 0 ? 'Savings ' : 'Increase ') + fmt.pct0.format(Math.abs(delta));
+    badge.className = 'kpi-badge ' + (delta < 0 ? 'kpi-good' : 'kpi-bad');
+    badge.hidden = false;
+  }
+}
+
+
+  function updateWeekdayDeltaBadge(charts, s) {
+    const d = (s.baselineWeek || charts.baseline?.data || []);
+    if (!d.length) return;
+    const sum = (k) => d.reduce((a,b)=>a + (Number(b[k])||0), 0);
+    const b = sum('baseline'), p = sum('post');
+    const delta = b ? (p - b) / b : 0;
+    setText('#delta-weekday', fmt.pct1.format(Math.abs(delta)) + (delta < 0 ? ' ↓' : ' ↑'));
+  }
+
+  // ---------- ROI widget ----------
+  function wireRoi(charts) {
+    const price    = qs('#inp-price');
+    const devices  = qs('#inp-devices');
+    const kwh      = qs('#inp-kwh');
+    const out      = qs('#roi-savings');
+    const lblP     = qs('#val-price');
+    const lblD     = qs('#val-devices');
+    const lblK     = qs('#val-kwh');
+    const priceTag = qs('#price-kwh-label');
+
+    if (!out) return; // widget not present → skip
+
+    const read = () => ({
+      price:   num(price?.value ?? 0.16, 0.16),
+      devices: Math.round(num(devices?.value ?? 100, 100)),
+      perDay:  num(kwh?.value ?? 1.2, 1.2),
+    });
+
+    const updateLabels = (st) => {
+      if (lblP)     lblP.textContent = st.price.toFixed(2);
+      if (lblD)     lblD.textContent = String(st.devices);
+      if (lblK)     lblK.textContent = st.perDay.toFixed(1);
+      if (priceTag) priceTag.textContent = `$${st.price.toFixed(2)}/kWh`;
+    };
+
+    const calc = () => {
+      const st = read();
+      pricePerKwh = st.price;
+      updateLabels(st);
+
+      const dollars = st.devices * st.perDay * 365 * st.price * 0.40; // 40% midpoint
+      out.textContent = fmt.money0.format(dollars);
+
+      recalcAirWithPrice(charts);
+    };
+
+    ['input', 'change'].forEach(evt => {
+      if (price)   price.addEventListener(evt, calc);
+      if (devices) devices.addEventListener(evt, calc);
+      if (kwh)     kwh.addEventListener(evt, calc);
+    });
+
+    calc();               // immediately
+    setTimeout(calc, 50); // run again after layout
+  }
+
+  function scaleAirRows(baseRows, price) {
+    if (!Array.isArray(baseRows) || !baseRows.length) return [];
+    const scale = (num(price, 0.16) / 0.16) || 1;
+    return baseRows.map(r => ({
+      cfm: r.cfm,
+      before: num(r.before, 0) * scale,
+      after:  num(r.after,  0) * scale
+    }));
+  }
+
+  function recalcAirWithPrice(charts) {
+    if (!charts.air || !lastAirBaseRows) return;
+    charts.air.data = scaleAirRows(lastAirBaseRows, pricePerKwh);
+  }
+
+  // ---------- Live toggle ----------
+  function wireLiveToggle() {
+    const btn = qs('#btn-live'); if (!btn) return;
+    btn.addEventListener('click', () => {
+      liveEnabled = !liveEnabled;
+      btn.dataset.active = liveEnabled ? 'true' : 'false';
+      btn.textContent = liveEnabled ? 'Pause Live' : 'Resume Live';
+    });
+  }
+
+  // ---------- SSE ----------
   function connectSSE(onData, onErr) {
     let es = null, backoff = 1000, lastLog = 0;
 
@@ -159,7 +366,7 @@
 
       es.onmessage = (ev) => {
         const now = performance.now();
-        if (now - lastLog > 4000) { console.log('SSE tick', ev.data.slice(0, 100) + '…'); lastLog = now; }
+        if (now - lastLog > 4000) { console.log('SSE tick', (ev.data||'').slice(0, 100) + '…'); lastLog = now; }
         try {
           const msg = JSON.parse(ev.data);
           if (msg && msg.state) onData(msg);
@@ -183,20 +390,18 @@
     start();
   }
 
-  /* -------------------- Data helpers -------------------- */
+  // ---------- Data helpers ----------
   function normalize(s) {
     if (!s || typeof s !== 'object') return s;
     const out = { ...s };
 
-    // Ensure tempSeries has { ts:number, temp,on,off }
     if (Array.isArray(out.tempSeries)) {
       out.tempSeries = out.tempSeries.map(d => {
         if (d && d.ts == null && d.time) {
-          // fallback if server sent label strings
           const ts = Date.now();
-          return { ts, temp: d.temp, on: d.on, off: d.off };
+          return { ts, temp: d.temp, on: d.on ?? 79, off: d.off ?? 73 };
         }
-        return d;
+        return { on: 79, off: 73, ...d };
       });
     }
     return out;
@@ -215,11 +420,11 @@
 
   function buildDemo() {
     const now = Date.now();
-    const tempSeries = Array.from({ length: 15 }, (_, i) => {
-      const ts = now - (14 - i) * 5000;
-      const wave = 75 + 3.5 * Math.sin(ts / 2500);
+    const tempSeries = Array.from({ length: 30 }, (_, i) => {
+      const ts = now - (29 - i) * 5000;
+      const wave = 75 + 2.5 * Math.sin(i / 6);
       const noise = (Math.random() - 0.5) * 0.8;
-      const temp = Math.round(Math.max(69, Math.min(81, wave + noise)));
+      const temp = Math.max(69, Math.min(81, Math.round(wave + noise)));
       return { ts, temp, on: 79, off: 73 };
     });
 
@@ -246,8 +451,13 @@
     };
   }
 
-  /* -------------------- UI helpers -------------------- */
-  function set(sel, val) { const el = document.querySelector(sel); if (el) el.textContent = val; }
+  // ---------- UI helpers ----------
+  function setText(sel, val) { const el = document.querySelector(sel); if (el) el.textContent = val; }
+  function qs(sel) { return document.querySelector(sel); }
+  function num(val, fallback = 0) {
+    const n = (typeof val === 'number') ? val : parseFloat(String(val).trim());
+    return Number.isFinite(n) ? n : fallback;
+  }
 
   function makeLiveBadge() {
     const el = document.createElement('div');

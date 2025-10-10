@@ -5,17 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bertline Labs — Plug-Load Energy Control (Live Demo)</title>
   <meta name="description" content="Live demo of BERT-style plug-load and temperature insights with real-time motion.">
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/tw.css">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Your styles -->
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tw.css">
+
+  <style>
+    /* page-specific polish (safe: doesn’t fight your global CSS) */
+    .chip{display:inline-flex;align-items:center;gap:.45rem;border-radius:999px;font-size:.75rem;padding:.3rem .7rem;border:1px solid rgba(255,255,255,.12);background:rgba(15,23,42,.6);color:#cbd5e1;backdrop-filter:saturate(140%) blur(2px)}
+    .chip[data-active="true"]{background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.2)}
+    .chip:focus{outline:2px solid rgba(99,102,241,.6);outline-offset:2px}
+    .card{position:relative;border-radius:1rem;padding:1.25rem;background:rgba(2,6,23,.66);border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05)}
+    .card:hover{box-shadow:0 12px 36px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.06)}
+    .subhead{font-size:.78rem;color:#94a3b8;margin-top:.2rem}
+    .kpi-badge{position:absolute;top:.6rem;right:1rem;font-size:.75rem;padding:.18rem .55rem;border-radius:.5rem}
+    .kpi-good{background:rgba(16,185,129,.15);color:#6ee7b7;outline:1px solid rgba(16,185,129,.35)}
+    .kpi-bad{background:rgba(245,158,11,.15);color:#fcd34d;outline:1px solid rgba(245,158,11,.35)}
+    .heading-glow{background:linear-gradient(90deg,#a5b4fc, #60a5fa 60%, #a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 2px 20px rgba(99,102,241,.25)}
+    .glass-hero{position:absolute;inset:0;z-index:-1;background:radial-gradient(1200px 600px at 10% -10%, rgba(99,102,241,.35), transparent 60%), radial-gradient(800px 500px at 90% 0%, rgba(59,130,246,.3), transparent 55%);filter:blur(20px);opacity:.5}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,.25),transparent)}
+    @media (prefers-reduced-motion:no-preference){
+      .card{transition:box-shadow .25s ease, transform .2s ease}
+      .card:hover{transform:translateY(-1px)}
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100" data-bertline>
+
+<body class="bg-slate-950 text-slate-100" id="bertline-root" data-bertline>
   <!-- Header -->
   <header class="relative isolate overflow-hidden">
-    <div class="absolute inset-0 -z-10 from-indigo-600 via-blue-600 to-indigo-700 bg-gradient-to-br opacity-30 blur-3xl"></div>
-    <div class="max-w-7xl mx-auto px-6 py-6">
+    <div class="glass-hero"></div>
+    <div class="max-w-7xl mx-auto px-6 py-8">
       <div class="flex items-center justify-between">
         <a href="/index.html" class="flex items-center gap-3">
           <img src="/img/FIG-Logo.png" class="h-8 w-auto" alt="FIG logo" />
@@ -28,75 +51,143 @@
       </div>
 
       <div class="mt-8 text-center">
-        <span class="inline-flex items-center rounded-full bg-white/10 ring-1 ring-white/15 px-3 py-1 text-xs text-slate-200">Live</span>
-        <h1 class="mt-3 text-4xl md:text-6xl font-bold leading-tight">Bertline Labs — Plug-Load Energy Control</h1>
-        <p class="mt-4 text-slate-300 max-w-2xl mx-auto">
+        <span class="inline-flex items-center rounded-full bg-white/10 ring-1 ring-white/15 px-3 py-1 text-xs text-slate-200" id="live-chip" aria-live="polite">Live</span>
+        <h1 class="mt-3 heading-glow text-4xl md:text-6xl font-extrabold leading-tight">Bertline Labs — Plug-Load Energy Control</h1>
+        <p class="mt-3 text-slate-300/90 max-w-2xl mx-auto">
           Real-time plug/hardwired load insight, temperature-based control, and scheduling—visualized with motion.
         </p>
       </div>
     </div>
+    <div class="divider"></div>
   </header>
 
   <!-- Main -->
-  <main class="max-w-7xl mx-auto px-6 py-10">
+  <main class="max-w-7xl mx-auto px-6 py-8">
     <!-- KPI cards -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4" aria-label="Key performance indicators">
       <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
         <div class="text-xs uppercase tracking-wide text-slate-400">Overnight Load Reduction</div>
         <div class="text-3xl font-semibold" id="kpi-overnight">—</div>
         <div class="text-[11px] text-emerald-400">Air-cleaner example</div>
+        <div class="mt-1 h-10" id="kpi-overnight-spark" aria-hidden="true"></div>
       </div>
       <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
         <div class="text-xs uppercase tracking-wide text-slate-400">Typical Payback</div>
         <div class="text-3xl font-semibold" id="kpi-payback">—</div>
         <div class="text-[11px] text-emerald-400">High-usage scenarios</div>
+        <div class="mt-1 h-10" id="kpi-payback-spark" aria-hidden="true"></div>
       </div>
       <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
         <div class="text-xs uppercase tracking-wide text-slate-400">Local Data Log</div>
         <div class="text-3xl font-semibold" id="kpi-log">—</div>
         <div class="text-[11px] text-slate-400">Offline redundancy</div>
+        <div class="mt-1 h-10" id="kpi-log-spark" aria-hidden="true"></div>
       </div>
       <div class="p-4 rounded-2xl shadow ring-1 ring-white/10 bg-slate-900/60">
         <div class="text-xs uppercase tracking-wide text-slate-400">Scale (per server)</div>
         <div class="text-3xl font-semibold" id="kpi-scale">—</div>
         <div class="text-[11px] text-slate-400">Devices supported</div>
+        <div class="mt-1 h-10" id="kpi-scale-spark" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- Charts grid -->
-    <section class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="font-semibold">Weekday kWh — Baseline vs Post-BERT</h3>
-          <span class="text-xs text-slate-400">Illustrative per-device</span>
+    <!-- Controls -->
+    <section class="mt-6 card">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" aria-label="Controls">
+        <div class="flex items-center gap-2" role="group" aria-label="Compare">
+          <span class="text-xs text-slate-400 mr-1">Compare:</span>
+          <button class="chip" id="btn-compare-baseline" data-mode="baseline" data-active="false">Baseline</button>
+          <button class="chip" id="btn-compare-post" data-mode="post" data-active="false">Post-BERT</button>
+          <button class="chip" id="btn-compare-both" data-mode="both" data-active="true">Both</button>
         </div>
-        <div id="baseline-chart" style="height:340px;"></div>
-      </div>
-
-      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="font-semibold">Overnight vs Daytime Load</h3>
-          <span class="text-xs text-slate-400">Non-operational hours visibility</span>
+        <div class="flex items-center gap-2" role="group" aria-label="Live toggle">
+          <button class="chip" id="btn-live" data-active="true">Pause Live</button>
         </div>
-        <div id="overnight-chart" style="height:340px;"></div>
-      </div>
-
-      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="font-semibold">Air-Cleaner Annual Cost — Before/After</h3>
-          <span class="text-xs text-slate-400">@ $0.16/kWh, 60h/wk</span>
-        </div>
-        <div id="aircleaner-chart" style="height:340px;"></div>
-      </div>
-
-      <div class="p-5 rounded-2xl ring-1 ring-white/10 bg-slate-900/60">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="font-semibold">Temperature Set-Points (AC)</h3>
-          <span class="text-xs text-slate-400">On 79°F • Off 73°F</span>
-        </div>
-        <div id="temp-chart" style="height:340px;"></div>
       </div>
     </section>
+
+<!-- Charts + ROI — 2-column layout at ≥768px (Temp top-right, ROI lower) -->
+<div id="charts-grid" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-max">
+
+  <!-- Row 1, left -->
+  <div class="card order-1 md:order-1">
+    <div class="flex items-center justify-between mb-1">
+      <div>
+        <h3 class="font-semibold">Weekday kWh — Baseline vs Post-BERT</h3>
+        <p class="subhead">Post-BERT reduces weekday device energy by <span id="delta-weekday">—</span>.</p>
+      </div>
+      <span class="text-xs text-slate-400">Illustrative per-device</span>
+    </div>
+    <div id="baseline-chart" style="height:340px;"></div>
+    <div id="baseline-badge" class="kpi-badge kpi-good" hidden>—</div>
+  </div>
+
+  <!-- Row 1, right (now Temperature) -->
+  <div class="card order-2 md:order-2">
+    <div class="flex items-center justify-between mb-1">
+      <div>
+        <h3 class="font-semibold">Temperature Set-Points (AC)</h3>
+        <p class="subhead">Guides at 79°F (on) and 73°F (off).</p>
+      </div>
+      <span class="text-xs text-slate-400">Thermal control</span>
+    </div>
+    <div id="temp-chart" style="height:340px;"></div>
+  </div>
+
+  <!-- Row 2, left -->
+  <div class="card order-3 md:order-3">
+    <div class="flex items-center justify-between mb-1">
+      <div>
+        <h3 class="font-semibold">Overnight vs Daytime Load</h3>
+        <p class="subhead">Stacked view of off-hours opportunity.</p>
+      </div>
+      <span class="text-xs text-slate-400">Share of total</span>
+    </div>
+    <div id="overnight-chart" style="height:340px;"></div>
+  </div>
+
+  <!-- Row 2, right -->
+  <div class="card order-4 md:order-4">
+    <div class="flex items-center justify-between mb-1">
+      <div>
+        <h3 class="font-semibold">Air-Cleaner Annual Cost — Before/After</h3>
+        <p class="subhead">@ <span id="price-kwh-label">$0.16/kWh</span>, 60h/wk.</p>
+      </div>
+      <span class="text-xs text-slate-400">Cost vs control</span>
+    </div>
+    <div id="aircleaner-chart" style="height:340px;"></div>
+  </div>
+
+  <!-- Row 3, right (moved ROI) -->
+  <aside class="card md:sticky md:top-6 h-max order-5 md:order-5">
+    <h3 class="font-semibold mb-2">ROI Estimator</h3>
+    <div class="space-y-3 text-sm">
+      <label class="block">
+        <span class="text-slate-300">Electricity price ($/kWh)</span>
+        <input id="inp-price" type="range" min="0.08" max="0.40" step="0.01" value="0.16" class="w-full">
+        <div class="flex justify-between"><span>0.08</span><span id="val-price">0.16</span><span>0.40</span></div>
+      </label>
+      <label class="block">
+        <span class="text-slate-300">Devices</span>
+        <input id="inp-devices" type="range" min="10" max="500" step="10" value="100" class="w-full">
+        <div class="flex justify-between"><span>10</span><span id="val-devices">100</span><span>500</span></div>
+      </label>
+      <label class="block">
+        <span class="text-slate-300">Avg Baseline kWh/day per device</span>
+        <input id="inp-kwh" type="range" min="0.2" max="4" step="0.1" value="1.2" class="w-full">
+        <div class="flex justify-between"><span>0.2</span><span id="val-kwh">1.2</span><span>4.0</span></div>
+      </label>
+    </div>
+    <div class="mt-4 p-4 rounded-xl bg-white/5 ring-1 ring-white/10">
+      <div class="text-slate-400 text-xs">Estimated annual savings</div>
+      <div class="text-3xl font-semibold mt-1" id="roi-savings">$—</div>
+      <div class="text-slate-400 text-xs mt-2">Assumes 35–45% reduction from off-hour control & schedules.</div>
+    </div>
+    <a href="/contact.html" class="mt-4 inline-block rounded-xl bg-indigo-500 hover:bg-indigo-600 px-5 py-3">Start a quick assessment</a>
+  </aside>
+</div>
+
+
 
     <!-- CTA -->
     <section class="mt-10">
@@ -109,7 +200,12 @@
   </main>
 
   <footer class="max-w-7xl mx-auto px-6 py-10 text-sm text-slate-400">© <span id="y"></span> Franklin Innovation Group</footer>
-  <!-- Only one script: helpers. It will lazy-load /js/bertline.js automatically. -->
+
+  <!-- AG Charts UMD -->
+  <script src="https://cdn.jsdelivr.net/npm/ag-charts-community/dist/umd/ag-charts-community.min.js"></script>
+  <!-- Your helper -->
   <script src="/js/helpers.js"></script>
+  <!-- Enhanced charts logic -->
+  <script src="/js/bertline.js"></script>
 </body>
 </html>
