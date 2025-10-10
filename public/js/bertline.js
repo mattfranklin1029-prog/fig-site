@@ -1,6 +1,6 @@
 // /public/js/bertline.js
 // Live AG Charts wired to /api/bertline/it-health + /api/bertline/stream (SSE)
-// Adds: compare toggle, KPI sparklines, ROI widget, safer formatting/theme.
+// Compare toggle now swaps series via the chart instance's update().
 
 (function () {
   if (window.__bertInit) return; window.__bertInit = true;
@@ -19,19 +19,36 @@
       label: { color: '#CBD5E1', fontSize: 11 },
       gridStyle: [{ stroke: 'rgba(255,255,255,0.06)' }],
     },
-    colors: {
-      primary: '#5B7CFF',
-      savings: '#10B981',
-      gray:    '#94A3B8',
-      warning: '#F59E0B',
-    }
+    colors: { primary: '#5B7CFF', savings: '#10B981', gray: '#94A3B8', warning: '#F59E0B' }
   };
+
+  // ---- Baseline chart series presets (immutable) ----
+  const BASELINE_SERIES_PRESET = {
+    baselineOnly: [
+      { type: 'line', xKey: 'day', yKey: 'baseline', yName: 'Baseline',
+        stroke: THEME.colors.gray, strokeWidth: 2, marker: { size: 3, fill: THEME.colors.gray } },
+    ],
+    postOnly: [
+      { type: 'line', xKey: 'day', yKey: 'post', yName: 'Post-BERT',
+        stroke: THEME.colors.savings, strokeWidth: 3, marker: { size: 0 } },
+    ],
+    both: [
+      { type: 'line', xKey: 'day', yKey: 'baseline', yName: 'Baseline',
+        stroke: THEME.colors.gray, strokeWidth: 2, marker: { size: 3, fill: THEME.colors.gray } },
+      { type: 'line', xKey: 'day', yKey: 'post', yName: 'Post-BERT',
+        stroke: THEME.colors.savings, strokeWidth: 3, marker: { size: 0 } },
+    ],
+  };
+  const cloneSeries = (arr) => JSON.parse(JSON.stringify(arr));
 
   // ---------- UI state ----------
   let compareMode = 'both';    // 'baseline' | 'post' | 'both'
   let liveEnabled = true;
   let pricePerKwh = 0.16;
   let lastAirBaseRows = null;
+
+  // Will hold the AgCharts UMD object
+  let AG = null;
 
   // ---------- Bootstrap ----------
   (async function init() {
@@ -43,7 +60,7 @@
       console.warn('AG Charts failed to load');
       return;
     }
-    const A = agCharts.AgCharts;
+    AG = agCharts.AgCharts;
 
     // Footer year
     const y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
@@ -52,9 +69,9 @@
     const initial = normalize(await fetchOrDemo('/api/bertline/it-health'));
 
     // Charts + KPIs
-    const charts = createCharts(A, initial);
+    const charts = createCharts(AG, initial);
     applyKpis(initial);
-    seedSparklines(A);
+    seedSparklines(AG);
     updateCompareVisibility(charts);
     updateWeekdayDeltaBadge(charts, initial);
 
@@ -102,12 +119,7 @@
             title: { text: 'kWh (per day)' },
             label: { formatter: ({ value }) => fmt.kwh.format(value) + ' kWh', color: '#CBD5E1', fontSize: 11 } }
         ],
-        series: [
-          { type: 'line', xKey: 'day', yKey: 'baseline', yName: 'Baseline',
-            stroke: THEME.colors.gray, strokeWidth: 2, marker: { size: 3, fill: THEME.colors.gray } },
-          { type: 'line', xKey: 'day', yKey: 'post', yName: 'Post-BERT',
-            stroke: THEME.colors.savings, strokeWidth: 3, marker: { size: 0 } },
-        ],
+        series: cloneSeries(BASELINE_SERIES_PRESET.both),
         legend: { position: 'bottom', item: { label: { color: '#E2E8F0' } } }
       });
     }
@@ -225,7 +237,7 @@
     ];
     cfgs.forEach(([sel, arr]) => {
       const el = qs(sel); if (!el) return;
-      A.create({
+      agCharts.AgCharts.create({
         container: el, axes: [], legend: { enabled: false }, background: { visible: false },
         series: [{ type: 'line', data: arr.map((y,i)=>({x:i,y})),
           xKey:'x', yKey:'y', stroke: THEME.colors.savings, strokeWidth: 2, marker: { size: 0 } }],
@@ -236,42 +248,50 @@
 
   // ---------- Compare toggle ----------
   function wireCompare(charts) {
-    const buttons = [
+    const map = [
       ['#btn-compare-baseline', 'baseline'],
       ['#btn-compare-post',     'post'],
       ['#btn-compare-both',     'both']
     ];
-    buttons.forEach(([sel, mode]) => {
+    map.forEach(([sel, mode]) => {
       const el = qs(sel); if (!el) return;
       el.addEventListener('click', () => {
         compareMode = mode;
-        buttons.forEach(([s2, m2]) => { const b = qs(s2); if (b) b.dataset.active = (m2 === mode); });
+        map.forEach(([s2, m2]) => { const b = qs(s2); if (b) b.dataset.active = (m2 === mode); });
         updateCompareVisibility(charts);
       });
     });
   }
 
-function updateCompareVisibility(charts) {
-  if (!charts || !charts.baseline || !charts.baseline.series) return; // ✅ safety guard
+  function updateCompareVisibility(charts) {
+    if (!charts || !charts.baseline) return;
 
-  const base = charts.baseline;
-  base.series.forEach(s => {
-    if (s.yName === 'Baseline')  s.visible = (compareMode !== 'post');
-    if (s.yName === 'Post-BERT') s.visible = (compareMode !== 'baseline');
-  });
+    const base = charts.baseline;
+    let next;
+    if (compareMode === 'baseline')      next = cloneSeries(BASELINE_SERIES_PRESET.baselineOnly);
+    else if (compareMode === 'post')     next = cloneSeries(BASELINE_SERIES_PRESET.postOnly);
+    else                                 next = cloneSeries(BASELINE_SERIES_PRESET.both);
 
-  const badge = qs('#baseline-badge');
-  const data = base.data || [];
-  if (badge && data.length) {
-    const sum = (k) => data.reduce((a,b)=>a + (Number(b[k])||0), 0);
-    const b = sum('baseline'), p = sum('post');
-    const delta = b ? (p - b) / b : 0;
-    badge.textContent = (delta < 0 ? 'Savings ' : 'Increase ') + fmt.pct0.format(Math.abs(delta));
-    badge.className = 'kpi-badge ' + (delta < 0 ? 'kpi-good' : 'kpi-bad');
-    badge.hidden = false;
+    // Use the chart instance method (works in UMD Community build)
+    if (typeof base.update === 'function') {
+      base.update({ series: next });
+    } else {
+      // Fallback: hard-assign (less ideal but functional)
+      base.series = next;
+    }
+
+    // badge text
+    const badge = qs('#baseline-badge');
+    const data = base.data || [];
+    if (badge && data.length) {
+      const sum = (k) => data.reduce((a,b)=>a + (Number(b[k])||0), 0);
+      const b = sum('baseline'), p = sum('post');
+      const delta = b ? (p - b) / b : 0;
+      badge.textContent = (delta < 0 ? 'Savings ' : 'Increase ') + fmt.pct0.format(Math.abs(delta));
+      badge.className = 'kpi-badge ' + (delta < 0 ? 'kpi-good' : 'kpi-bad');
+      badge.hidden = false;
+    }
   }
-}
-
 
   function updateWeekdayDeltaBadge(charts, s) {
     const d = (s.baselineWeek || charts.baseline?.data || []);
